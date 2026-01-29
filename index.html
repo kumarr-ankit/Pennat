@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" id="favicon" type="image/svg+xml+png" href="/favicon.png" />
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pennat</title>
+  <meta name="description"
+    content="Pennat is a blogging site to write, publish, and read blogs on technology, ideas, and personal experiences.">
+  <meta name="keywords" content="pennat, pennat blog, penat, pennat.in,pennat.vercel.app,pennat project, blogging, blogs, write blogs, publish articles">
+
+
+</head>
+
+<body>
+
+  <script>
+    //Code for favicon Changing on the behave of system theme (dark/light)
+    const isDark = window.matchMedia('(prefers-color-scheme:dark)');
+    function changeFavicon() {
+      let faviconPath = isDark.matches ? '/favicon-dark.png' : '/favicon.png';
+      let faviconLink = document.getElementById('favicon');
+      //set favicon
+      faviconLink.href = faviconPath;
+    }
+    isDark.addEventListener('change', () => {
+      changeFavicon();
+    })
+    changeFavicon();
+  </script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>
