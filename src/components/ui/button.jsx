@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
+import { Slot } from "radix-ui";
 
 import { cn } from "@/lib/utils";
 
@@ -39,13 +39,13 @@ const buttonVariants = cva(
 );
 
 function Button({
-  className,
+  className = "bg-black text-white cursor-pointer active:bg-gray-600",
   variant = "default",
   size = "default",
   asChild = false,
   ...props
 }) {
-  const Comp = asChild ? Slot : "button";
+  const Comp = asChild ? Slot.Root : "button";
 
   return (
     <Comp
@@ -58,5 +58,4 @@ function Button({
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export { Button, buttonVariants };

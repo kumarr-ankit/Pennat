@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 0;
+    transform: translateY(0);
+
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(16px);
+
+  }
+}
+
+@keyframes popup {
+
+  from 0% {
+    scale: 0;
+  height: 0;
+  width: 0;
+  }
+
+  to {
+    scale: 1;
+    height: auto;
+    width: auto;
+  }
+
+}
