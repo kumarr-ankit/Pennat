@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  createHashRouter,
+  RouterProvider,
+} from "react-router-dom";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
@@ -9,7 +13,8 @@ import supabase from "./config/supabaseClient";
 import { dataContext, userContext } from "./context/Context";
 
 function App() {
-  const router = createBrowserRouter([
+  console.log("SUPABASE URL:", import.meta.env.VITE_SUPABASE_URL);
+  const router = createHashRouter([
     {
       path: "/",
       element: (
@@ -18,7 +23,7 @@ function App() {
         </>
       ),
     },
-       {
+    {
       path: "/auth",
       element: (
         <>

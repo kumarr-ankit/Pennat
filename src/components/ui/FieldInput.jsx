@@ -21,10 +21,11 @@ function FieldInput({ showPopUp, setShowPopUp }) {
     let body = bodyRef.current.value;
 
     let newArticle = {
-      UserTable: { name: userInfo.name, username: userInfo.username },
+      UserTable: { name: userInfo.name, username: userInfo.username, profile_img : userInfo.profile_img },
       body: body,
       id: crypto.randomUUID(),
       title: title,
+     
     };
 
     if (body && title) {
