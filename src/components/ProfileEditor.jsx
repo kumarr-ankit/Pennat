@@ -36,12 +36,7 @@ function ProfileImageUpdater({
 
         let cloudinaryData = await cloudinaryRes.json();
 
-        //console.log(cloudinaryData)
-
-        //console.log(cloudinaryRes);
-
         if (cloudinaryRes.ok && user_id) {
-         
           console.log("url", cloudinaryData.secure_url);
           console.log("Calling supabase.");
           let supabaseRes = await supabase
@@ -80,73 +75,82 @@ function ProfileImageUpdater({
   }
 
   return (
-    <div className="fixed box-border  bg-gray-300 rounded-xl py-8 px-8 my-auto mx-8 h-fit w-fit left-0 right-0 top-0 bottom-0">
-      <X
-        onClick={() => {
-          setImgEditor((p) => !p);
-        }}
-        height={"18px"}
-        className="bg-white rounded-4xl cursor-pointer absolute -top-2 -right-2"
-      />
-
-      <div className="w-full font-bold text-2xl">Edit profile photo</div>
-
-      <div>
-        <img
-          src={profileImg}
-          alt="current cover"
-          className="rounded-xl my-2 max-h-40 max-w-full"
+    <div className="fixed inset-0  w-full h-fit bg-opacity-50 flex items-center justify-center box-border z-50 p-2 sm:p-4">
+      <div className="relative bg-gray-100 border border-gray-300 rounded-xl p-4 sm:p-8 md:p-12">
+        <X
+          onClick={() => {
+            setImgEditor((p) => !p);
+          }}
+          size={20}
+          className="bg-white rounded-full cursor-pointer absolute -top-2 -right-2 p-1 hover:bg-gray-200 transition"
         />
-      </div>
-      <form
-        onReset={() => {
-          setPreview(null);
-        }}
-      >
-        <label
-          htmlFor="img-input"
-          className="w-full rounded-xl p-2 border hover:bg-gray-400 cursor-pointer"
-        >
-          {" "}
-          <ImageUp className="inline" />
-          <input
-            type="file"
-            accept="image/*"
-            id="img-input"
-            onChange={handleChange}
-            className="inline p-4 cursor-pointer "
-          />
-        </label>
-        {preview && (
-          <div className="w-full  ">
-            <label htmlFor="reset" className="relative">
-              {" "}
-              <input type="reset" id="reset" value="" />{" "}
-              <X
-                height={"18px"}
-                className="bg-white rounded-4xl absolute top-4 p-0.5 -left-1"
-              />
-            </label>
-            <img
-              src={preview}
-              alt="preview"
-              className="rounded-xl w-fit max-h-40"
-            />
 
-            <div>
-              <button
-                type="submit"
-                className="bg-black cursor-pointer text-white px-4 py-2 rounded-xl mt-2"
-                onClick={handleImgSubmit}
-              >
-                Submit
-              </button>
+        <div className="w-full font-bold text-lg sm:text-xl md:text-2xl mb-3 sm:mb-4">
+          Edit profile photo
+        </div>
+
+        <div>
+          <img
+            src={profileImg}
+            alt="current profile"
+            className="rounded-xl my-2 max-h-32 sm:max-h-40 w-full object-cover"
+          />
+        </div>
+
+        <form
+          onReset={() => {
+            setPreview(null);
+          }}
+        >
+          <label
+            htmlFor="img-input"
+            className="w-full bg-gray-300 flex flex-row items-center gap-2 rounded-xl p-2 border hover:bg-gray-400 cursor-pointer text-sm sm:text-base"
+          >
+            <ImageUp className="inline shrink-0" size={20} />
+            <span className="truncate">Choose Image</span>
+            <input
+              type="file"
+              accept="image/*"
+              id="img-input"
+              onChange={handleChange}
+              className="hidden"
+            />
+          </label>
+
+          {preview && (
+            <div className="w-full mt-3 sm:mt-4">
+              <div className="relative">
+                <label htmlFor="reset" className="absolute top-2 right-2 z-10">
+                  <input type="reset" id="reset" className="hidden" />
+                  <X
+                    size={18}
+                    className="bg-white rounded-full cursor-pointer p-0.5 hover:bg-gray-200 transition"
+                  />
+                </label>
+                <img
+                  src={preview}
+                  alt="preview"
+                  className="rounded-xl w-full max-h-48 sm:max-h-60 object-cover"
+                />
+              </div>
+
+              <div className="mt-3 sm:mt-4">
+                <button
+                  type="submit"
+                  className="w-full sm:w-auto bg-black cursor-pointer text-white px-4 sm:px-6 py-2 rounded-xl hover:bg-gray-800 transition text-sm sm:text-base"
+                  onClick={handleImgSubmit}
+                >
+                  Submit
+                </button>
+              </div>
             </div>
-          </div>
-        )}
-      </form>
+          )}
+        </form>
+      </div>
     </div>
   );
+
+  
 }
 
 export default ProfileImageUpdater;

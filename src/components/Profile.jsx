@@ -1,3 +1,8 @@
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import supabase from "../config/supabaseClient";
+import { cover_placeholder } from "../../public/resource";
+import userDp from "../assets/user.png";
 import {
 	ChevronLeft,
 	Circle,
@@ -7,17 +12,33 @@ import {
 	WheatIcon,
 	X,
 } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
-import userDp from "../assets/user.png";
-
-import { userContext } from "../context/Context";
 import ImageUpdater from "./ImageUpdater";
-import { cover_placeholder } from "../../public/resource";
+
 import ProfileImageUpdater from "./ProfileEditor";
 import UserProfilePosts from "./UserProfilePosts";
 
-function ProfilePage() {
-	const [userInfo] = useContext(userContext);
+function Profile() {
+	const { username } = useParams();
+
+	let [userInfo, setUserInfo] = useState();
+
+	useEffect(() => {
+		async function loaddata() {
+			const res = await supabase
+				.from("UserTable")
+				.select("*,ArticleTable(*)")
+				.eq("username", username)
+				.single();
+
+			if (res.error) return;
+
+			if (res.data) setUserInfo(res.data);
+		}
+
+		loaddata();
+	}, [setUserInfo, username]);
+
+	
 	const [ImgEditor, setImgEditor] = useState(false);
 	const [loaded, setLoaded] = useState(false);
 	const [failed, setFailed] = useState(false);
@@ -44,8 +65,7 @@ function ProfilePage() {
 	}, [userInfo]);
 
 	const name = userInfo?.name || "";
-	const username = userInfo?.username || "";
-	const email = userInfo?.email || "";
+	const user_name = userInfo?.username || "";
 
 	if (!loaded && !failed) {
 		return (
@@ -123,7 +143,7 @@ function ProfilePage() {
 							<h2 className="mt-4 text-2xl font-bold text-gray-900">{name}</h2>
 						)}
 
-						{username && <p className="text-sm text-gray-500">@{username}</p>}
+						{user_name && <p className="text-sm text-gray-500">@{user_name}</p>}
 					</div>
 
 					<div className="space-y-0">
@@ -175,4 +195,4 @@ function ProfilePage() {
 	);
 }
 
-export default ProfilePage;
+export default Profile;

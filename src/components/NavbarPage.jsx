@@ -7,7 +7,7 @@ function NavbarPage() {
 
   return (
     <>
-      <nav className="flex   w-full justify-between px-4 fixed top-0 backdrop-blur-2xl   py-2">
+      <nav className="flex   w-full justify-between px-4 fixed top-0 backdrop-blur-2xl z-2  py-2">
         <div>
           <h1 className="font-bold text-3xl pl-2">Pennat</h1>
         </div>

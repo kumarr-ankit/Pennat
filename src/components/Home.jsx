@@ -16,7 +16,7 @@ function Home() {
           onClick={() => {
             setShowPopUp((p) => !p);
           }}
-          className="  mx-auto md:w-[82%] fixed top-12 left-0 right-0 md:top-0 "
+          className="  mx-auto md:w-[82%] fixed top-14 left-0 right-0 md:top-0 "
         >
           {!showPopUp && <AddArticle />}
         </div>
