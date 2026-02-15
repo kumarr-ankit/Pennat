@@ -15,7 +15,7 @@ import Profile from "./components/Profile";
 
 function App() {
 	console.log("SUPABASE URL:", import.meta.env.VITE_SUPABASE_URL);
-	const router = createHashRouter([
+	const router = createBrowserRouter([
 		{
 			path: "/",
 			element: (
