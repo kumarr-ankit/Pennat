@@ -3,6 +3,7 @@ import {
 	createHashRouter,
 	RouterProvider,
 } from "react-router-dom";
+import { Spinner } from "@/components/ui/spinner"
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
@@ -12,8 +13,12 @@ import { useEffect, useState } from "react";
 import supabase from "./config/supabaseClient";
 import { dataContext, userContext } from "./context/Context";
 import Profile from "./components/Profile";
+import ArticleWriter from "./components/ArticleWriter";
+import { Toaster } from "sonner";
+import Loader from "./components/Loader";
 
 function App() {
+
 	console.log("SUPABASE URL:", import.meta.env.VITE_SUPABASE_URL);
 	const router = createHashRouter([
 		{
@@ -23,6 +28,15 @@ function App() {
 					<Auth />
 				</>
 			),
+		},
+		{
+			path: "/write",
+			element: (
+				<>
+					<ArticleWriter />
+				</>
+			),
+			errorElement: <h2>Error Occurred.🙂</h2>,
 		},
 		{
 			path: "/:username",
@@ -70,6 +84,9 @@ function App() {
 		},
 	]);
 
+
+
+
 	const [articlesData, setArticlesData] = useState([]);
 	const [userInfo, setUserInfo] = useState();
 
@@ -100,14 +117,21 @@ function App() {
 		return () => {};
 	}, []);
 
+
+
 	useEffect(() => {
 		console.log(articlesData);
 
 		return () => {};
 	}, [articlesData]);
 
+
+
 	return (
 		<div>
+			
+			
+			<Toaster position="top-center"/>
 			<dataContext.Provider value={[articlesData, setArticlesData]}>
 				<userContext.Provider value={[userInfo]}>
 					<RouterProvider router={router} />

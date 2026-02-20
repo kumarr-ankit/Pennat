@@ -4,6 +4,7 @@ import { dataContext, userContext } from "../context/Context";
 import { Ellipsis, Trash } from "lucide-react";
 import supabase from "../config/supabaseClient";
 import { NavLink } from "react-router-dom";
+import parse from "html-react-parser";
 
 function ArticleCard({ article }) {
 	const { name, username, profile_img } = article.UserTable;
@@ -34,7 +35,7 @@ function ArticleCard({ article }) {
 		}
 	}
 	return (
-		<div className=" h-fit w-[80%] sm:w-[50%] md:w-[40%] my-2 rounded  px-2 pt-1 pb-4  border border-gray-200 shadow-xs">
+		<div className=" h-fit w-[80vw] sm:w-[60vw]  my-2 rounded-xl  px-2 pt-1 pb-4  border border-gray-200 shadow-xs">
 			<div className="  flex justify-between mx-1">
 				<div className=" flex flex-row items-center ">
 					<img
@@ -50,10 +51,10 @@ function ArticleCard({ article }) {
 					</div>
 				</div>
 
-				<div className="relative [&>ul]:hidden [&:hover>ul]:block cursor-pointer">
+				<div className="relative [&>ul]:hidden [&:hover>ul]:block cursor-pointer hidden">
 					<Ellipsis />
 
-					<ul className="bg-white  p-1 absolute rounded-md border-gray-500">
+					<ul className="bg-white  p-1 absolute rounded-md border-gray-500 ">
 						{user_id === author_id && (
 							<li
 								className="flex border items-center px-2 -mt-2 -ml-2 py-1 text-red-900 rounded-md hover:bg-red-400"
@@ -68,7 +69,7 @@ function ArticleCard({ article }) {
 			<div className="px-4 py-2 text-lg font-semibold my-0">
 				{article.title}
 			</div>
-			<div className="px-4">{article.body}</div>
+			<div className="px-4">{parse(article.body)}</div>
 		</div>
 	);
 }
