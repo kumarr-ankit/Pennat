@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <!-- <link rel="icon" id="favicon" type="image/svg+xml+png" href="./public/" /> -->
+  <link rel="icon" id="favicon" type="image/svg+xml+png" href="./public/favicon.png" />
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pennat</title>
@@ -24,7 +24,7 @@
       let faviconPath = isDark.matches ? '/favicon-dark.png' : '/favicon.png';
       let faviconLink = document.getElementById('favicon');
       //set favicon
-      faviconLink.href = faviconPath;
+      if(faviconLink) faviconLink.href = faviconPath;
     }
     isDark.addEventListener('change', () => {
       changeFavicon();
