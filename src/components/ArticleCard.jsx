@@ -35,7 +35,7 @@ function ArticleCard({ article }) {
 		}
 	}
 	return (
-		<div className=" h-fit w-[80vw] sm:w-[60vw]  my-2 rounded-xl  px-2 pt-1 pb-4  border border-gray-200 shadow-xs">
+		<div className=" h-fit w-[80vw] sm:w-[60vw]  my-2 rounded-md dark:border-[#1F1B24]  px-2 pt-1 pb-4  border border-gray-200 shadow-xs">
 			<div className="  flex justify-between mx-1">
 				<div className=" flex flex-row items-center ">
 					<img

@@ -3,7 +3,7 @@ import {
 	createHashRouter,
 	RouterProvider,
 } from "react-router-dom";
-import { Spinner } from "@/components/ui/spinner"
+import { Spinner } from "@/components/ui/spinner";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
@@ -11,14 +11,14 @@ import ProfilePage from "./components/ProfilePage";
 import Auth from "./components/Auth";
 import { useEffect, useState } from "react";
 import supabase from "./config/supabaseClient";
-import { dataContext, userContext } from "./context/Context";
+import { dataContext, userContext, themeContext } from "./context/Context";
 import Profile from "./components/Profile";
 import ArticleWriter from "./components/ArticleWriter";
 import { Toaster } from "sonner";
 import Loader from "./components/Loader";
+import NavbarPage from "./components/NavbarPage";
 
 function App() {
-
 	console.log("SUPABASE URL:", import.meta.env.VITE_SUPABASE_URL);
 	const router = createHashRouter([
 		{
@@ -84,9 +84,6 @@ function App() {
 		},
 	]);
 
-
-
-
 	const [articlesData, setArticlesData] = useState([]);
 	const [userInfo, setUserInfo] = useState();
 
@@ -117,24 +114,26 @@ function App() {
 		return () => {};
 	}, []);
 
-
-
 	useEffect(() => {
 		console.log(articlesData);
 
 		return () => {};
 	}, [articlesData]);
 
-
+	const [isDark, setIsDark] = useState(false);
 
 	return (
-		<div>
-			
-			
-			<Toaster position="top-center"/>
+		<div
+			className={`${isDark ? "dark" : ""}
+		*:dark:bg-[#121212]
+		*:dark:text-[#E0E0E0]`}>
+			<Toaster position="top-center" />
+
 			<dataContext.Provider value={[articlesData, setArticlesData]}>
 				<userContext.Provider value={[userInfo]}>
-					<RouterProvider router={router} />
+					<themeContext.Provider value={setIsDark}>
+						<RouterProvider router={router}></RouterProvider>
+					</themeContext.Provider>
 				</userContext.Provider>
 			</dataContext.Provider>
 		</div>

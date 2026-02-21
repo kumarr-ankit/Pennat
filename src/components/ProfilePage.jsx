@@ -69,15 +69,15 @@ function ProfilePage() {
 	}
 
 	return (
-		<div className="min-h-screen from-gray-50 to-gray-200 box-border max-w-[99%] ">
+		<div className="min-h-screen dark:text-gray-500   from-gray-50 to-gray-200 box-border max-w-[99%] ">
 			<button
 				onClick={() => history.back()}
-				className="fixed top-5 left-5 z-10 cursor-pointer rounded-full bg-white/80 backdrop-blur 
+				className="fixed top-5 left-5 z-10 cursor-pointer rounded-full dark:bg-[#1F1B24] bg-white backdrop-blur 
                p-2 shadow hover:scale-105 transition">
-				<ChevronLeft className="text-gray-700" />
+				<ChevronLeft />
 			</button>
 
-			<button className="fixed right-2 top-4 bg-gray-200 z-20 rounded-4xl py-3 px-2 ">
+			<button className="fixed right-2 top-6 dark:bg-[#1F1B24] bg-gray-200 z-20 rounded-4xl py-3 mr-4 px-2 ">
 				<PencilIcon
 					height={"16px"}
 					onClick={() => {
@@ -88,7 +88,7 @@ function ProfilePage() {
 			</button>
 
 			{cover && (
-				<div className="w-full overflow-x-hidden bg-gray-100 max-h-50 rounded-b-sm p-2 h-50 flex justify-center bg-cover overflow-clip">
+				<div className="w-full overflow-x-hidden bg-gray-100 max-h-50 dark:bg-[#1F1B24] rounded-b-sm p-2 h-50 flex justify-center bg-cover overflow-clip">
 					{" "}
 					<img
 						src={cover}
@@ -97,12 +97,13 @@ function ProfilePage() {
 				</div>
 			)}
 
-			<div className="-mt-24 max-w-xl mx-auto px-4">
+
+			<div className="-mt-24 max-w-xl mx-auto px-4 ">
 				<div className="bg-transparent rounded p-6">
 					<div className="flex relative [&>button]:hidden [&:hover>button]:block flex-col items-center">
 						{profileImg && (
 							<>
-								<button className="absolute ml-18 bg-white rounded-4xl py-1 px-1 ">
+								<button className="absolute ml-18 bg-white dark:bg-[#1F1B24] rounded-4xl py-1 px-1 ">
 									<PencilIcon
 										height={"16px"}
 										onClick={() => {
@@ -114,13 +115,15 @@ function ProfilePage() {
 								<img
 									src={profileImg}
 									alt="user"
-									className="w-32 h-32 rounded-full ring-4 ring-white shadow-md object-cover"
+									className="w-32 h-32 rounded-full ring-4 dark:bg-[#1F1B24]  shadow-md object-cover"
 								/>
 							</>
 						)}
 
 						{name && (
-							<h2 className="mt-4 text-2xl font-bold text-gray-900">{name}</h2>
+							<h2 className="mt-4 text-2xl font-bold text-gray-900 dark:text-gray-200">
+								{name}
+							</h2>
 						)}
 
 						{username && <p className="text-sm text-gray-500">@{username}</p>}

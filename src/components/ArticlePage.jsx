@@ -25,7 +25,8 @@ function ArticlePage() {
 	return (
 		<div>
 			{articlesData?.length && (
-				<div className="flex justify-center  flex-col items-center w-full box-border pb-8 ">
+				<div className="flex justify-center  flex-col items-center w-full box-border pb-8 
+				">
 					{articlesData &&
 						articlesData.map((el) => <ArticleCard key={el.id} article={el} />)}
 				</div>

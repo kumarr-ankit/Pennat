@@ -23,7 +23,11 @@ function ProfilePostCard({ article, setArticle }) {
 	}
 
 	return (
-		<div className="border box-border px-4  hover:bg-gray-200 rounded-lg m-2   -bg-conic-120 shadow-inner min-h-30 min-w-40 flex items-center border-gray-300  max-w-[80%] sm:max-w-1/3">
+		<div className="border box-border px-4   rounded-md m-1   -bg-conic-120  min-h-30 
+		
+		
+		dark:text-gray-400
+		min-w-40 flex items-center border-gray-300 dark:bg-[#202225]	dark:border-[#1F1B24]  max-w-[80%] sm:max-w-1/3">
 			{loader && <Loader text={"Deleting.."} />}
 			{!loader && (
 				<div>
@@ -31,12 +35,12 @@ function ProfilePostCard({ article, setArticle }) {
 						<select
 							name=""
 							id=""
-							className="w-fit *:w-fit px-2 py-1 ">
+							className="w-fit *:w-fit px-2 py-1  ">
 							<option value="" className="hidden"></option>
-							<option value="" className="bg-red-500 " onClick={handleDelete}>
+							<option value="" className="bg-red-500 dark:bg-[#1F1B24]" onClick={handleDelete}>
 								Delete
 							</option>
-							<option value="" className="">
+							<option value="" className="dark:bg-[#1F1B24]">
 								Edit
 							</option>
 						</select>

@@ -9,7 +9,7 @@ function UserProfilePosts({ ArticleTable }) {
 
 	return (
 		<div>
-			<p className="text-xs  font-semibold uppercase tracking-wider text-gray-400 border-t pt-2 border-t-gray-200 mx-10 ">
+			<p className="text-xs  font-semibold uppercase tracking-wider text-gray-400 border-t pt-2 border-t-gray-200 mx-10 dark:border-[#2f3136]">
 				My articles
 			</p>
 

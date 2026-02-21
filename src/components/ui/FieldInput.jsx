@@ -52,16 +52,16 @@ function FieldInput({ showPopUp, setShowPopUp }) {
 	return (
 		<div
 			hidden={!showPopUp}
-			className="bg-gray-200  md:max-w-[60vw] md:mx-auto animate-[popup_30s_ease-in_1] backdrop-blur-2xl rounded-2xl fixed top-0 z-4 left-0 right-0    m-10 bottom-0 h-100">
+			className="bg-gray-200 dark:bg-[#1F1B24] md:max-w-[60vw] md:mx-auto animate-[popup_30s_ease-in_1] backdrop-blur-2xl rounded-2xl fixed top-0 z-4 left-0 right-0    m-10 bottom-0 h-100">
 			<form className="p-8 " onReset={reset} onSubmit={handleSubmit}>
 				<X
 					onClick={() => {
 						setShowPopUp((p) => !p);
 						reset();
 					}}
-					className="absolute bg-red-200 rounded-full p-1 right-1 top-1 hover:text-red-600 cursor-pointer"
+					className="absolute bg-red-200  dark:bg-[#1F1B24] rounded-full p-1 right-1 top-1 hover:text-red-600 cursor-pointer"
 				/>
-				<fieldset className=" py-2 px-4 rounded pb-2 border border-gray-300">
+				<fieldset className=" py-2 px-4  dark:bg-[#1F1B24] rounded pb-2 border border-gray-300">
 					<legend className="text-lg font-[verdana] px-2"> Your Article</legend>
 					<label className="">
 						Enter the title
@@ -85,7 +85,7 @@ function FieldInput({ showPopUp, setShowPopUp }) {
 					<br />
 					<button
 						type="submit"
-						className="bg-black mt-3 px-4 py-1 rounded-xl text-white cursor-pointer active:bg-gray-700">
+						className="bg-black mt-3 px-4 py-1 rounded-xl  dark:bg-[#1F1B24] text-white cursor-pointer active:bg-gray-700">
 						Publish
 					</button>
 					<button

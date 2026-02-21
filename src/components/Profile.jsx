@@ -38,7 +38,6 @@ function Profile() {
 		loaddata();
 	}, [setUserInfo, username]);
 
-	
 	const [ImgEditor, setImgEditor] = useState(false);
 	const [loaded, setLoaded] = useState(false);
 	const [failed, setFailed] = useState(false);
@@ -69,7 +68,11 @@ function Profile() {
 
 	if (!loaded && !failed) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
+			<div className="min-h-screen 
+			dark:bg-[#1F1B24]
+			dark:*:text-gray-100
+			
+			flex items-center justify-center">
 				<div className="flex items-center gap-2 text-gray-600">
 					<LoaderCircle size={24} className="animate-spin" />
 					<span>Loading profile...</span>
@@ -92,12 +95,12 @@ function Profile() {
 		<div className="min-h-screen from-gray-50 to-gray-200 box-border max-w-[99%] ">
 			<button
 				onClick={() => history.back()}
-				className="fixed top-5 left-5 z-10 cursor-pointer rounded-full bg-white/80 backdrop-blur 
+				className="fixed top-5 left-5 z-10 cursor-pointer rounded-full bg-white dark:bg-[#1F1B24] backdrop-blur 
                p-2 shadow hover:scale-105 transition">
-				<ChevronLeft className="text-gray-700" />
+				<ChevronLeft  />
 			</button>
 
-			<button className="fixed right-2 top-4 bg-gray-200 z-20 rounded-4xl py-3 px-2 ">
+			<button className="fixed right-2 top-4 dark:bg-[#1F1B24] bg-gray-200 z-20 rounded-4xl py-3 px-2 ">
 				<PencilIcon
 					height={"16px"}
 					onClick={() => {
@@ -122,7 +125,7 @@ function Profile() {
 					<div className="flex relative [&>button]:hidden [&:hover>button]:block flex-col items-center">
 						{profileImg && (
 							<>
-								<button className="absolute ml-18 bg-white rounded-4xl py-1 px-1 ">
+								<button className="absolute ml-18 bg-white rounded-4xl py-1 px-1 dark:bg-[#1F1B24]">
 									<PencilIcon
 										height={"16px"}
 										onClick={() => {
@@ -140,10 +143,10 @@ function Profile() {
 						)}
 
 						{name && (
-							<h2 className="mt-4 text-2xl font-bold text-gray-900">{name}</h2>
+							<h2 className="mt-4 text-2xl font-bold text-gray-900 dark:text-gray-100">{name}</h2>
 						)}
 
-						{user_name && <p className="text-sm text-gray-500">@{user_name}</p>}
+						{user_name && <p className="text-sm  text-gray-500">@{user_name}</p>}
 					</div>
 
 					<div className="space-y-0">

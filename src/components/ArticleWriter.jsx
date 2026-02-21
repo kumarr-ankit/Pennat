@@ -51,6 +51,7 @@ function ArticleWriter() {
 		sticky
 		top-80
 		mx-auto
+	
 		sm:w-[60vw]
 		
 		">
@@ -69,8 +70,8 @@ function ArticleWriter() {
 						</div>
 					</div>
 				</div>
-				<div className="overflow-y-auto my-1 box-border border border-gray-300 rounded-xl shadow">
-					<div className="border-b  border-b-gray-100">
+				<div className="overflow-y-auto my-1 box-border border border-gray-300 rounded-xl 	dark:border-[#1F1B24] shadow">
+					<div className="border-b 	dark:border-[#1F1B24] border-b-gray-100">
 						<input
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}

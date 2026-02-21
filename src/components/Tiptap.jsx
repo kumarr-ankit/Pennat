@@ -30,7 +30,7 @@ const Tiptap = ({ fun }) => {
 					
 				/>
 				<div className="flex flex-row justify-between mr-1 sticky bottom-0">
-					<div className="bg-gray-300 w-fit wrap-anywhere rounded-4xl px-2  *:mx-1 flex *:wrap-break-word">
+					<div className="bg-gray-300 w-fit  dark:bg-[#1F1B24] wrap-anywhere rounded-4xl px-2  *:mx-1 flex *:wrap-break-word">
 						<button
 							type="button"
 							onClick={() => {
