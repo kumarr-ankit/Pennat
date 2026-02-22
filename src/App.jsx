@@ -11,12 +11,14 @@ import ProfilePage from "./components/ProfilePage";
 import Auth from "./components/Auth";
 import { useEffect, useState } from "react";
 import supabase from "./config/supabaseClient";
+// eslint-disable-next-line no-unused-vars
 import { dataContext, userContext, themeContext } from "./context/Context";
 import Profile from "./components/Profile";
 import ArticleWriter from "./components/ArticleWriter";
 import { Toaster } from "sonner";
 import Loader from "./components/Loader";
 import NavbarPage from "./components/NavbarPage";
+import InstallPWA from "./components/InstallPWA";
 
 function App() {
 	console.log("SUPABASE URL:", import.meta.env.VITE_SUPABASE_URL);
@@ -128,6 +130,7 @@ function App() {
 		*:dark:bg-[#121212]
 		*:dark:text-[#E0E0E0]`}>
 			<Toaster position="top-center" />
+			<InstallPWA />
 
 			<dataContext.Provider value={[articlesData, setArticlesData]}>
 				<userContext.Provider value={[userInfo]}>
