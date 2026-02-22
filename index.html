@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" id="favicon" type="image/svg+xml+png" href="/Pennat/favicon.png" />
+  <link rel="icon" id="favicon" type="image/svg+xml+png" href="/assets/favicon-NMned4kR.png" />
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pennat</title>
@@ -13,9 +13,9 @@
     content="pennat, pennat blog, penat, pennat.in,pennat.vercel.app,pennat project, blogging, blogs, write blogs, publish articles">
 
 
-  <script type="module" crossorigin src="/Pennat/assets/index-C6z2LxaQ.js"></script>
-  <link rel="stylesheet" crossorigin href="/Pennat/assets/index-DhF_L3d2.css">
-</head>
+  <script type="module" crossorigin src="/assets/index-DdMpNgtq.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-uGWrpJ4F.css">
+<link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
 
 <body >
 
@@ -26,7 +26,7 @@
       let faviconPath = isDark.matches ? '/favicon-dark.png' : '/favicon.png';
       let faviconLink = document.getElementById('favicon');
       //set favicon
-      faviconLink.href = faviconPath;
+      if(faviconLink) faviconLink.href = faviconPath;
     }
     isDark.addEventListener('change', () => {
       changeFavicon();
