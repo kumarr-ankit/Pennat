@@ -39,7 +39,10 @@ function Login() {
   }
 
   return (
-    <div  className="bg-[url('/background.jpeg')] min-h-screen max-w-screen bg-center bg-cover ">
+    <div  className="
+    bg-linear-to-r from-slate-900 to-slate-700
+    
+    min-h-screen max-w-screen bg-center bg-cover ">
       <h1 className="text-3xl font-bold px-2 text-clip b inline text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-pink-600  w-full ">
         Pennat
       </h1>
