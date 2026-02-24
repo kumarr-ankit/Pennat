@@ -15,6 +15,7 @@ import ImageUpdater from "./ImageUpdater";
 import { cover_placeholder } from "../../public/resource";
 import ProfileImageUpdater from "./ProfileEditor";
 import UserProfilePosts from "./UserProfilePosts";
+import ProfileFooter from "./ProfileFooter";
 
 function ProfilePage() {
 	const [userInfo] = useContext(userContext);
@@ -26,6 +27,8 @@ function ProfilePage() {
 	const [cover, setCover] = useState(cover_placeholder);
 	const [profileImg, setProfileImg] = useState(userDp);
 	const [about, setAbout] = useState("");
+
+	//pwa
 
 	useEffect(() => {
 		function loader() {
@@ -69,24 +72,27 @@ function ProfilePage() {
 	}
 
 	return (
-		<div className="min-h-screen dark:text-gray-500   from-gray-50 to-gray-200 box-border max-w-[99%] ">
-			<button
-				onClick={() => history.back()}
-				className="fixed top-5 left-5 z-10 cursor-pointer rounded-full dark:bg-[#1F1B24] bg-white backdrop-blur 
+		<div className=" relative dark:text-gray-500 dark:bg-black bg-white pb-1  from-gray-50 to-gray-200 box-border w-full">
+			<div className="absolute w-full z-10 ">
+				<div className="w-full flex justify-between">
+					<button
+						onClick={() => history.back()}
+						className="ml-1 z-10 cursor-pointer rounded-full dark:bg-[#1F1B24] bg-white backdrop-blur 
                p-2 shadow hover:scale-105 transition">
-				<ChevronLeft />
-			</button>
+						<ChevronLeft />
+					</button>
 
-			<button className="fixed right-2 top-6 dark:bg-[#1F1B24] bg-gray-200 z-20 rounded-4xl py-3 mr-4 px-2 ">
-				<PencilIcon
-					height={"16px"}
-					onClick={() => {
-						SetPopup((p) => !p);
-					}}
-					className="hover:-rotate-8 cursor-pointer "
-				/>
-			</button>
-
+					<button className=" right-2 top-6 dark:bg-[#1F1B24] bg-gray-200 z-20 rounded-4xl py-3 mr-4 px-2 ">
+						<PencilIcon
+							height={"16px"}
+							onClick={() => {
+								SetPopup((p) => !p);
+							}}
+							className="hover:-rotate-8 cursor-pointer "
+						/>
+					</button>
+				</div>
+			</div>
 			{cover && (
 				<div className="w-full overflow-x-hidden bg-gray-100 max-h-50 dark:bg-[#1F1B24] rounded-b-sm p-2 h-50 flex justify-center bg-cover overflow-clip">
 					{" "}
@@ -96,7 +102,6 @@ function ProfilePage() {
 					/>
 				</div>
 			)}
-
 
 			<div className="-mt-24 max-w-xl mx-auto px-4 ">
 				<div className="bg-transparent rounded p-6">
@@ -174,6 +179,8 @@ function ProfilePage() {
 			{userInfo?.ArticleTable && (
 				<UserProfilePosts ArticleTable={userInfo?.ArticleTable} />
 			)}
+
+			<ProfileFooter />
 		</div>
 	);
 }

@@ -9,7 +9,7 @@ import { useState } from "react";
 import { FilePenLine, PenLine } from "lucide-react";
 
 function Home() {
-	const [write, setWriter] = useState(true);
+	const [write, setWriter] = useState(false);
 
 	return (
 		<div className="w-full  -mt-2 box-border h-fit  min-h-screen dark:bg-[#1F1B24]">

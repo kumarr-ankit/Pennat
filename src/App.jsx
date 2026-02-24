@@ -136,7 +136,11 @@ function App() {
 			className={`${isDark == "dark" ? "dark" : ""}
 		*:dark:bg-[#121212]
 		*:dark:text-[#E0E0E0]
+		mx-0
+		*:mx-0
+		*:my:0
 		
+		*:box-border
 		dark:bg-black
 		`}>
 			<Toaster position="top-center" />
@@ -144,7 +148,7 @@ function App() {
 
 			<dataContext.Provider value={[articlesData, setArticlesData]}>
 				<userContext.Provider value={[userInfo]}>
-					<themeContext.Provider value={[isDark, setIsDark]}>
+					<themeContext.Provider value={[isDark, setIsDark,theme]}>
 						<RouterProvider router={router}></RouterProvider>
 					</themeContext.Provider>
 				</userContext.Provider>

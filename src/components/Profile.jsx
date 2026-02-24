@@ -16,6 +16,7 @@ import ImageUpdater from "./ImageUpdater";
 
 import ProfileImageUpdater from "./ProfileEditor";
 import UserProfilePosts from "./UserProfilePosts";
+import ProfileFooter from "./ProfileFooter";
 
 function Profile() {
 	const { username } = useParams();
@@ -92,10 +93,10 @@ function Profile() {
 	}
 
 	return (
-		<div className="min-h-screen from-gray-50 to-gray-200 box-border max-w-[99%] ">
+		<div className="min-h-screen py-60 w-full ">
 			<button
 				onClick={() => history.back()}
-				className="fixed top-5 left-5 z-10 cursor-pointer rounded-full bg-white dark:bg-[#1F1B24] backdrop-blur 
+				className="fixed top-5  z-10 cursor-pointer rounded-full bg-white dark:bg-[#1F1B24] backdrop-blur 
                p-2 shadow hover:scale-105 transition">
 				<ChevronLeft  />
 			</button>
@@ -194,6 +195,8 @@ function Profile() {
 			{userInfo?.ArticleTable && (
 				<UserProfilePosts ArticleTable={userInfo?.ArticleTable} />
 			)}
+
+			<ProfileFooter/>
 		</div>
 	);
 }

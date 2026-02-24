@@ -2,7 +2,7 @@
 import { ArrowDownToLine, Download, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export default function InstallPWA() {
+export default function InstallPWA({ show, Class }) {
 	let pwa = localStorage.getItem("pwa");
 	const [deferredPrompt, setDeferredPrompt] = useState(null);
 	const [showInstallButton, setShowInstallButton] = useState(
@@ -28,6 +28,7 @@ export default function InstallPWA() {
 	}, []);
 
 	const handleInstallClick = async () => {
+		console.log("Being Clciked");
 		if (!deferredPrompt) return;
 
 		// Show the install prompt
@@ -51,10 +52,13 @@ export default function InstallPWA() {
 
 	return (
 		<>
-			{showInstallButton && (
+			{(showInstallButton || show == true) && (
 				<div
-					className="mt-60  fixed bottom-4 left-2 px-3 py-3 border rounded-full   shadow-2xl z-20 text-white hover:bg-gray-900 hover:cursor-pointer bg-black "
-					onClick={handleInstallClick}>
+					className={`${
+						Class
+							? "w-fit h-fit"
+							: "mt-60  fixed bottom-4 left-2 px-3 py-3 border rounded-full   shadow-2xl z-20 text-white hover:bg-gray-900 hover:cursor-pointer bg-black "
+					}`}>
 					<span className="absolute -top-2 right-0  bg-gray-700 rounded-full">
 						<X
 							size={16}
@@ -66,7 +70,9 @@ export default function InstallPWA() {
 						/>
 					</span>
 
-					<div className="flex  items-center  text-gray-300">
+					<div
+						onClick={handleInstallClick}
+						className="flex  items-center  text-gray-300">
 						<ArrowDownToLine size={18} />
 						<span className="pl-2 text-sm text-gray-500"> Install App</span>
 					</div>
