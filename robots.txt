@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pennat.vercel.app/sitemap.xml
