@@ -142,7 +142,7 @@ function App() {
 			<div className="min-h-screen flex items-center justify-center dark:bg-black">
 				<div className="flex items-center gap-2 text-gray-600">
 					<LoaderCircle size={24} className="animate-spin" />
-					<span>Loading profile...</span>
+					<span>Hold tight...</span>
 				</div>
 			</div>
 		);
@@ -161,6 +161,7 @@ function App() {
 		`}>
 			<Toaster position="top-center" />
 			<InstallPWA />
+		
 
 			<dataContext.Provider value={[articlesData, setArticlesData]}>
 				<userContext.Provider value={[userInfo,loading]}>

@@ -7,21 +7,47 @@ import ArticleWriter from "./ArticleWriter";
 import { useContext, useEffect, useState } from "react";
 
 import { FilePenLine, LogIn, PenLine } from "lucide-react";
-import { userContext } from "../context/Context";
+import { dataContext, userContext } from "../context/Context";
 import { useNavigate } from "react-router-dom";
+import supabase from "../config/supabaseClient";
 
 function Home() {
+
 	const [write, setWriter] = useState(false);
-	const info = useContext(userContext);
+	const [userInfo, isLoading] = useContext(userContext);
 	const navi = useNavigate();
+	const [, setArticlesData] = useContext(dataContext);
 
 	useEffect(() => {
-		if (!info) {
-			navi("/login", { replace: true });
-		}
-	}, [info, navi]);
 
-	if (!info) return null;
+		if (isLoading) return;
+
+		if (!userInfo) {
+			navi("/auth", { replace: true });
+			return null;
+		} else {
+			async function loadeArticles() {
+
+				const response = await supabase
+					.from("ArticleTable")
+					.select(
+						"id,title,author_id,body,UserTable(name,username,profile_img,user_id)"
+					);
+
+				if (response.error) {
+					console.error("Database error:", response.error);
+					alert("Error loading articles");
+					navi("/login", { replace: true });
+					return null;
+				}
+				if (response.data) {
+					setArticlesData(response.data);
+				}
+			}
+
+			loadeArticles();
+		}
+	}, [userInfo, isLoading, navi, setArticlesData]);
 
 	return (
 		<div className="w-full overflow-x-clip  -mt-2 box-border h-fit  min-h-screen dark:bg-[#1F1B24]">

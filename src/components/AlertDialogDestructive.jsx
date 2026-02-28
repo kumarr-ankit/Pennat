@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { Trash2Icon, UserX } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { themeContext, userContext } from "../context/Context";
-import { Input } from "@/components/ui/input";
 import supabase from "../config/supabaseClient";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";

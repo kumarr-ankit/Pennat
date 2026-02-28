@@ -1,8 +1,5 @@
 import React, { useContext, useEffect } from "react";
 import ArticleCard from "./ArticleCard";
-import FieldInput from "./ui/FieldInput";
-import AddArticle from "./AddArticle";
-
 import { useNavigate } from "react-router-dom";
 import { dataContext } from "../context/Context";
 import { LoaderCircle } from "lucide-react";
@@ -17,19 +14,22 @@ function ArticlePage() {
 			if (!articlesData.length) {
 				console.log("articles data is empty.");
 				navi("/auth");
-				return null;
+				return;
 			}
 		}, 500);
 	}, [articlesData, navi]);
 
 	return (
 		<div className="mt-9">
-			{articlesData?.length && (
-				<div className="flex justify-center  flex-col items-center w-full box-border pb-8 
+			{articlesData?.length ? (
+				<div
+					className="flex justify-center  flex-col items-center w-full box-border pb-8 
 				">
 					{articlesData &&
 						articlesData.map((el) => <ArticleCard key={el.id} article={el} />)}
 				</div>
+			) : (
+				""
 			)}
 			{!articlesData?.length && (
 				<div className="min-h-screen flex items-center justify-center">
