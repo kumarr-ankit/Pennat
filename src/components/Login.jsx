@@ -10,7 +10,6 @@ function Login() {
 	const [success, setSuccess] = useState();
 	const emailRef = useRef();
 	const passwordRef = useRef();
-
 	const navi = useNavigate();
 
 	async function handleSubmit() {
@@ -23,17 +22,18 @@ function Login() {
 				email: email,
 				password: password,
 			});
+
 			if (error) {
 				console.log("error is.");
 
-				
-
-        if(!error.code){
-          setErrorMsg({
-            code : null,
-            message : 'Something went wrong.'
-          });
-        }
+				if (!error.code) {
+					setErrorMsg({
+						code: null,
+						message: "Something went wrong.",
+					});
+				} else {
+					setErrorMsg(error);
+				}
 
 				return;
 			}
@@ -46,15 +46,12 @@ function Login() {
 			}
 		} catch (error) {
 			console.log(error);
+			setErrorMsg(error);
 		}
 	}
 
 	return (
-		<div
-			className="
-    bg-linear-to-r from-slate-900 to-slate-700
-    
-    min-h-screen max-w-screen bg-center bg-cover ">
+		<div className="bg-linear-to-r from-slate-900 to-slate-700  min-h-screen max-w-screen bg-center bg-cover ">
 			<h1 className="text-3xl font-bold px-2 text-clip b inline text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-pink-600  w-full ">
 				Pennat
 			</h1>
@@ -67,7 +64,7 @@ function Login() {
 					Login to your account
 				</p>
 
-				<form action="." onSubmit={handleSubmit}>
+				<form onSubmit={handleSubmit}>
 					<div className="mx-12">
 						<label
 							htmlFor="email"
@@ -82,10 +79,7 @@ function Login() {
 							required
 							title="Enter your email"
 							placeholder="pennat@exmple.com"
-							className="p-2 border rounded  
-               bg-slate-300 
-              
-               min-w-56 text-black"
+							className="p-2 border rounded  bg-slate-300 min-w-56 text-black"
 						/>
 						<br />
 						<label
@@ -111,8 +105,8 @@ function Login() {
 						/>{" "}
 						<br />
 						<p className="text-sm text-slate-200">
-							{/* Min. length 6, include uppercase,lowercase,numbers and special
-                symbols */}
+							Possibly your password had min. length 6, included
+							uppercase,lowercase,numbers and special symbols.
 						</p>
 					</div>
 
