@@ -11,7 +11,7 @@ function ArticleCard({ article }) {
 	const [userInfo] = useContext(userContext);
 	const [, setArticles] = useContext(dataContext);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	
+	const preview = article?.preview;
 
 	let author_id = article?.author_id;
 	let user_id = userInfo?.user_id;
@@ -32,13 +32,14 @@ function ArticleCard({ article }) {
 
 	return (
 		<div
-			className="
-  
-        
+			className=" 
         w-full sm:w-[60vw] max-w-2xl mx-auto py-6 px-4 mb-4 bg-white dark:bg-[#141414] sm:border border-gray-100 dark:border-[#1F1B24] sm:rounded-xl transition-all hover:shadow-[0_2px_15px_rgba(0,0,0,0.1)] active:border-2">
 			<div className="flex justify-between items-center mb-4">
 				<div className="flex items-center gap-3">
 					<img
+					 onClick={()=>{
+						navigate(`/profile/${username}`)
+					 }}
 						src={profile_img || userDp}
 						alt={name}
 						className="size-10 rounded-full object-cover ring-1 ring-gray-100 dark:ring-gray-800"
@@ -79,7 +80,7 @@ function ArticleCard({ article }) {
 
 			<div
 				onClick={() => {
-					navigate(`/article?id=${article.id}`);
+					if (!preview) navigate(`/article?id=${article.id}`);
 				}}
 				className="hover:cursor-pointer">
 				<div className="space-y-2">
