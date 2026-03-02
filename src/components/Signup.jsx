@@ -42,7 +42,10 @@ function Signup() {
 			console.log("Data is.");
 			console.log(data);
 			setErrorMsg(null);
-
+			alert(
+				"💡 Please remember your password or copy it. Password : " +
+					passwordRef.current.value
+			);
 			setUserData(data.user);
 			setSuccess(true);
 			setTimeout(() => {
@@ -83,10 +86,11 @@ function Signup() {
 		if (data) {
 			console.log(data);
 			setSuccess(true);
+
 			setTimeout(() => {
 				setSuccess(false);
 				navi("/auth");
-			}, 3000);
+			}, 1000);
 		}
 	}
 	return (
