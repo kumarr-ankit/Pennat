@@ -109,7 +109,7 @@ const router = createBrowserRouter([
 		),
 		errorElement: <>Something Went Wrong.</>,
 	},
-		{
+	{
 		path: "/flow",
 		element: (
 			<>
@@ -140,31 +140,29 @@ function App() {
 		console.log("Running App.💡💡");
 
 		let res = await supabase.auth.getUser();
-		console.log("res",res);
+		console.log("res", res);
 
 		try {
 			if (res?.data?.user) {
 				let { id } = res.data.user;
-				console.log(id)
+				console.log(id);
 
 				let { data, error } = await supabase
 					.from("UserTable")
 					.select("*,ArticleTable(*)")
 					.eq("user_id", id)
-					;
-
+					.single();
 				if (error) {
 					console.error("Database error:", error);
-					console.log(error)
+					console.log(error);
 					setUserInfo(null);
 				} else {
-					console.log(data)
+					console.log(data);
 					setUserInfo(data);
 				}
 			}
-
 		} catch (error) {
-			alert("Error while Loading." + error)
+			alert("Error while Loading." + error);
 			console.log(error);
 			setUserInfo(null);
 		} finally {
@@ -218,7 +216,7 @@ function App() {
 			<InstallPWA />
 
 			<dataContext.Provider value={[articlesData, setArticlesData]}>
-				<userContext.Provider value={[userInfo, loading,loadUser]}>
+				<userContext.Provider value={[userInfo, loading, loadUser]}>
 					<themeContext.Provider value={[isDark, setIsDark, theme]}>
 						<RouterProvider router={router}></RouterProvider>
 					</themeContext.Provider>

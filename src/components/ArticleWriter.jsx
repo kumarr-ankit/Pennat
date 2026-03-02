@@ -104,7 +104,7 @@ function ArticleWriter({ setWriter }) {
 					<div className="p-4 border-t flex justify-end">
 						<button
 							type="submit"
-							disabled={!html || title.length < 4}
+							disabled={!html || title.length < 1}
 							className="bg-blue-600 dark:bg-blue-900 hover:bg-blue-700 text-white px-6 py-2 rounded-full transition disabled:bg-gray-100 
 			  hover:cursor-pointer
 			  hover:disabled:cursor-not-allowed">
