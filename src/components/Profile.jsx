@@ -145,7 +145,7 @@ function Profile() {
 							<Ellipsis size={24}  className={!control && 'text-amber-50'}/>
 							<ul
 								hidden={!control}
-								className="absolute right-10  w-fit min-w-[20vw]   sm:min-w-[10vw]  rounded-md dark:bg-[#1F1B24] bg-gray-100 shadow-lg transition cursor-pointer p-1
+								className="absolute z-50 right-10  w-fit min-w-[20vw]   sm:min-w-[10vw]  rounded-md dark:bg-[#1F1B24] bg-gray-100 shadow-lg transition cursor-pointer p-1
                             *:hover:border
                             *:rounded-md
                             *:hover:bg-gray-600
@@ -196,7 +196,7 @@ function Profile() {
 			</div>
 
 			{/* Profile Info Section */}
-			<div className="-mt-20 max-w-xl mx-auto px-4 relative z-20">
+			<div className="-mt-20 max-w-xl mx-auto px-4 relative ">
 				<div className="flex flex-col items-center">
 					<div className="relative group">
 						<img

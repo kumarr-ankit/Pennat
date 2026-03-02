@@ -64,13 +64,13 @@ function ImageUpdater({ cover, setCover, SetPopup, user_id }) {
 
   return (
     <div className="fixed inset-0  w-full h-fit bg-opacity-50 flex items-center justify-center box-border z-50 p-2 sm:p-4">
-      <div className="relative bg-gray-100 border border-gray-300 rounded-xl p-4 sm:p-8 md:p-12">
+      <div className="relative bg-background border border-gray-300 text-foreground rounded-xl p-4 sm:p-8 md:p-12">
         <X
           onClick={() => {
             SetPopup((p) => !p);
           }}
           size={20}
-          className="bg-white rounded-full cursor-pointer absolute -top-2 -right-2 p-1 hover:bg-gray-200 transition"
+          className="bg-background  rounded-full cursor-pointer absolute -top-2 -right-2 p-1 hover:text-black hover:bg-gray-200 transition"
         />
 
         <div className="w-full font-bold text-lg sm:text-xl md:text-2xl mb-3 sm:mb-4">
@@ -92,7 +92,7 @@ function ImageUpdater({ cover, setCover, SetPopup, user_id }) {
         >
           <label
             htmlFor="img-input"
-            className="w-full bg-gray-300 flex flex-row items-center gap-2 rounded-xl p-2 border hover:bg-gray-400 cursor-pointer text-sm sm:text-base"
+            className="w-full bg-background text-foreground hover:text-black flex flex-row items-center gap-2 rounded-xl p-2 border hover:bg-gray-400 cursor-pointer text-sm sm:text-base"
           >
             <ImageUp className="inline shrink-0" size={20} />
             <span className="truncate">Choose Image</span>
@@ -112,7 +112,7 @@ function ImageUpdater({ cover, setCover, SetPopup, user_id }) {
                   <input type="reset" id="reset" className="hidden" />
                   <X
                     size={18}
-                    className="bg-white rounded-full cursor-pointer p-0.5 hover:bg-gray-200 transition"
+                    className="bg-background rounded-full cursor-pointer p-0.5 hover:text-black hover:bg-gray-200 transition"
                   />
                 </label>
                 <img
