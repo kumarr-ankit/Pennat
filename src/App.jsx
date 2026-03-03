@@ -186,11 +186,6 @@ function App() {
 	}
 	const [isDark, setIsDark] = useState(localStorage.getItem("theme"));
 
-	useEffect(() => {
-		console.log("Calling Theme Change")
-		updateStatusBar(isDark === "dark");
-		console.log(isDark);
-	}, [isDark]);
 
 	//check for pwa
 	let isPwa = localStorage.getItem("pwa");

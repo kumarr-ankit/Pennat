@@ -1,5 +1,5 @@
 import { Pen, Pencil, User } from "lucide-react";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Switch } from "@/components/ui/switch";
 import { themeContext } from "../context/Context";
@@ -8,6 +8,13 @@ import { updateStatusBar } from "./Theme";
 function NavbarPage() {
 	const naviagtors = useNavigate();
 	const [isDark, setIsDark] = useContext(themeContext);
+	
+		useEffect(() => {
+		console.log("Calling Theme Change")
+		updateStatusBar(isDark === "dark");
+		console.log(isDark);
+	}, [isDark]);
+
 
 	return (
 		<nav
