@@ -34,8 +34,8 @@ export default defineConfig({
 				name: "Pennat", // full name
 				short_name: "Pennat", // home screen name (≤12 chars best)
 				description: "Blogging Made Simple.💖",
-				theme_color: "#ffffff",
-				background_color: "#ffffff",
+
+				background_color: "#0f172b",
 				display: "standalone", // or "minimal-ui", "browser", "fullscreen"
 				scope: "/",
 				start_url: "/",
@@ -69,6 +69,4 @@ export default defineConfig({
 		},
 	},
 	base: "/",
-
-
 });
