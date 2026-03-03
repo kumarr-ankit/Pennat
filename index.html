@@ -11,24 +11,28 @@
     content="Pennat is a blogging site to write, publish, and read blogs on technology, ideas, and personal experiences.">
   <meta name="keywords"
     content="pennat, pennat blog, penat, pennat.in,pennat.vercel.app,pennat project, blogging, blogs, write blogs, publish articles">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <meta name="theme-color" content="#0f172b">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <meta name="theme-color" id="statusBar" content="#0f172b">
 
 
 </head>
 
-<body >
+<body>
 
   <script>
     //Code for favicon Changing on the behave of system theme (dark/light)
     const isDark = window.matchMedia('(prefers-color-scheme:dark)');
     function changeFavicon() {
       let faviconPath = isDark.matches ? '/favicon-dark.png' : '/favicon.png';
+      let color = isDark.matches ? "#0f172b" : "#ffffff";
       let faviconLink = document.getElementById('favicon');
+      let statusBar = document.getElementById('statusBar');
       //set favicon
-      if(faviconLink) faviconLink.href = faviconPath;
+      if (faviconLink) faviconLink.href = faviconPath;
+ 
     }
     isDark.addEventListener('change', () => {
       changeFavicon();
