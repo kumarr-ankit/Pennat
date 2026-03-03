@@ -187,7 +187,7 @@ function App() {
 	const [isDark, setIsDark] = useState(localStorage.getItem("theme"));
 
 	useEffect(() => {
-		//updateStatusBar(isDark === "dark");
+		updateStatusBar(isDark === "dark");
 		console.log(isDark);
 	}, [isDark]);
 

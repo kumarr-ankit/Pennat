@@ -27,12 +27,12 @@
     const isDark = window.matchMedia('(prefers-color-scheme:dark)');
     function changeFavicon() {
       let faviconPath = isDark.matches ? '/favicon-dark.png' : '/favicon.png';
-      let color = isDark.matches ? "#000000" : "#ffffff";
+      let color = isDark.matches ? "#0f172b" : "#ffffff";
       let faviconLink = document.getElementById('favicon');
       let statusBar = document.getElementById('statusBar');
       //set favicon
       if (faviconLink) faviconLink.href = faviconPath;
-      if(statusBar) statusBar.setAttribute('content',color);
+ 
     }
     isDark.addEventListener('change', () => {
       changeFavicon();
