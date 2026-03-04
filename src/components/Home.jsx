@@ -16,7 +16,9 @@ function Home() {
 	const [write, setWriter] = useState(false);
 	const [userInfo, isLoading] = useContext(userContext);
 	const navi = useNavigate();
-	const [articles, setArticlesData] = useContext(dataContext);
+
+	const [articles, setArticlesData, , setLikedArcticles] =
+		useContext(dataContext);
 
 	useEffect(() => {
 		if (isLoading) return;
@@ -29,7 +31,7 @@ function Home() {
 				const response = await supabase
 					.from("ArticleTable")
 					.select(
-						"article_id,id,title,author_id,body,UserTable(name,username,profile_img,user_id)"
+						"likes,article_id,id,title,author_id,body,UserTable(name,username,profile_img,user_id)"
 					);
 
 				if (response.error) {
@@ -40,12 +42,27 @@ function Home() {
 				}
 				if (response.data) {
 					setArticlesData(response.data);
+					console.log(response.data);
+
+					const { data, error } = await supabase.from("LikesTable").select();
+
+					if (error) {
+						console.log(error);
+					} else if (data) {
+						let tempSet = new Set();
+						data.forEach((row) => {
+							if(row.user_id == userInfo.user_id) tempSet.add(row.article_id);
+						});
+						console.log("Liked Articles By Me 🙍‍♂️🩷");
+						console.log(tempSet);
+						setLikedArcticles(tempSet);
+					}
 				}
 			}
 
 			loadeArticles();
 		}
-	}, [userInfo, isLoading, navi, setArticlesData]);
+	}, [userInfo, isLoading, navi, setLikedArcticles, setArticlesData]);
 
 	return (
 		<div className="w-full overflow-x-clip  -mt-2 box-border h-fit  min-h-screen dark:bg-[#1F1B24]">
@@ -76,7 +93,7 @@ function Home() {
 
 			<div className="box-border">
 				{articles && <ArticlePage />}
-				{!articles && <NoArticles/>}
+				{!articles && <NoArticles />}
 			</div>
 		</div>
 	);

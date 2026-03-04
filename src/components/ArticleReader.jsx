@@ -29,7 +29,7 @@ function ArticleReader() {
 					.eq("id", articleId)
 					.single();
 
-				if (error) throw error;
+				if (error) console.log(error);
 				setArticle(data);
 				console.log(data);
 				setAuthor(data.UserTable);

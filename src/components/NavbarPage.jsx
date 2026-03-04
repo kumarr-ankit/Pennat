@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Switch } from "@/components/ui/switch";
 import { themeContext } from "../context/Context";
-import { updateStatusBar } from "./Theme";
+
 
 function NavbarPage() {
 	const naviagtors = useNavigate();
@@ -18,13 +18,13 @@ function NavbarPage() {
 
 	return (
 		<nav
-			className="flex   w-full justify-between px-4 fixed 
+			className="flex items-center  w-full justify-between px-4 fixed 
 			backdrop-blur-sm
 			border-b
 		dark:bg-black
 		top-0  z-2  py-1">
 			<div>
-				<h1 className="font-bold text-3xl pl-2">Pennat</h1>
+				<h1 className="font-bold text-3xl mb-4 pl-2">Pennat</h1>
 			</div>
 			<div>
 				<ul

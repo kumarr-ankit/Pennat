@@ -1,19 +1,23 @@
 import React, { useContext, useState } from "react";
 import userDp from "../assets/user.png";
 import { dataContext, userContext } from "../context/Context";
-import { Ellipsis, Trash2 } from "lucide-react";
+import { Ellipsis, Heart, MessageCircle, Send, Trash2 } from "lucide-react";
 import supabase from "../config/supabaseClient";
 import { NavLink, useNavigate } from "react-router-dom";
 import parse from "html-react-parser";
+import { toast } from "sonner";
 
 function ArticleCard({ article }) {
 	const { name, username, profile_img } = article.UserTable;
+	let [, , likedArcticles, setLikedArcticles] = useContext(dataContext);
+
 	const [userInfo] = useContext(userContext);
 	const [, setArticles] = useContext(dataContext);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const preview = article?.preview;
 
 	let author_id = article?.author_id;
+	let articleId = article?.article_id;
 	let user_id = userInfo?.user_id;
 	const navigate = useNavigate();
 
@@ -30,16 +34,87 @@ function ArticleCard({ article }) {
 		}
 	}
 
+	const [likes, setLikes] = useState(article?.likes ?? 0);
+	const [isLiking, setIsLiking] = useState(false);
+	const isLiked = likedArcticles.has(articleId);
+
+	async function handleLikeCount(e) {
+		e.preventDefault();
+		e.stopPropagation();
+
+		if (isLiking) return;
+		setIsLiking(true);
+
+		// Capture before any awaits to avoid drift
+		const wasLiked = isLiked;
+
+		// 1. Optimistic UI update
+		setLikes((prev) => (wasLiked ? prev - 1 : prev + 1));
+
+		setLikedArcticles((prev) => {
+			const newSet = new Set(prev);
+			wasLiked ? newSet.delete(articleId) : newSet.add(articleId);
+			return newSet;
+		});
+
+		// 2. Update LikesTable first
+
+		const likeRes = wasLiked
+			? await supabase
+					.from("LikesTable")
+					.delete()
+					.eq("article_id", articleId)
+					.eq("user_id", user_id)
+			: await supabase
+					.from("LikesTable")
+					.insert({ article_id: articleId, user_id: user_id });
+
+		if (likeRes.error) {
+			toast("❌ Error while liking");
+			// Full rollback
+			setLikes((prev) => (wasLiked ? prev + 1 : prev - 1));
+			setLikedArcticles((prev) => {
+				const newSet = new Set(prev);
+				wasLiked ? newSet.add(articleId) : newSet.delete(articleId);
+				return newSet;
+			});
+			setIsLiking(false);
+			return;
+		}
+
+		// 3. Fetch fresh count from DB then update
+		const { data: freshData, error: fetchError } = await supabase
+			.from("ArticleTable")
+			.select("likes")
+			.eq("article_id", articleId)
+			.single();
+
+		if (fetchError) {
+			toast("❌ Error fetching like count");
+			setLikes((prev) => (wasLiked ? prev + 1 : prev - 1));
+			setIsLiking(false);
+			return;
+		}
+
+		const { error } = await supabase
+			.from("ArticleTable")
+			.update({ likes: freshData.likes + (wasLiked ? -1 : 1) })
+			.eq("article_id", articleId);
+
+		if (error) {
+			toast("❌ Error updating like count");
+			setLikes((prev) => (wasLiked ? prev + 1 : prev - 1));
+		}
+
+		setIsLiking(false);
+	}
+
 	return (
-		<div
-			className=" 
-        w-full sm:w-[60vw] max-w-2xl mx-auto py-6 px-4 mb-4 bg-white dark:bg-[#141414] sm:border border-gray-100 dark:border-[#1F1B24] sm:rounded-xl transition-all hover:shadow-[0_2px_15px_rgba(0,0,0,0.1)] active:border-2">
+		<div className="w-full sm:w-[60vw] max-w-2xl mx-auto py-6 px-4 bg-white dark:bg-[#141414] sm:border sm:mt-2 border-gray-100 dark:border-[#1F1B24] sm:rounded-xl transition-all hover:shadow-[0_2px_15px_rgba(0,0,0,0.1)]">
 			<div className="flex justify-between items-center mb-4">
 				<div className="flex items-center gap-3">
 					<img
-					 onClick={()=>{
-						navigate(`/profile/${username}`)
-					 }}
+						onClick={() => navigate(`/profile/${username}`)}
 						src={profile_img || userDp}
 						alt={name}
 						className="size-10 rounded-full object-cover ring-1 ring-gray-100 dark:ring-gray-800"
@@ -87,18 +162,37 @@ function ArticleCard({ article }) {
 					<h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 leading-snug">
 						{article.title}
 					</h2>
-
 					<div className="text-[15px] leading-relaxed text-gray-600 dark:text-gray-400 line-clamp-3 prose-p:m-0 prose-headings:text-lg">
 						{parse(article.body)}
 					</div>
 				</div>
-			</div>
 
-			{/* <div className="mt-4 flex items-center gap-4 text-xs text-gray-400">
-                <span>{new Date(article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-                <span className="flex items-center gap-1">•</span>
-                <span className="hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer">Read more</span>
-            </div> */}
+				<div className="w-full mt-2">
+					<ul className="flex mt-4 justify-start items-center *:mx-2 w-fit *:flex">
+						<li
+							onClick={handleLikeCount}
+							className={`flex items-center gap-2 text-sm cursor-pointer select-none transition-colors ${
+								isLiked
+									? "text-red-500"
+									: "text-gray-600 dark:text-gray-400 hover:text-red-500"
+							}`}>
+							<Heart
+								size={20}
+								fill={isLiked ? "#ff0000" : "none"}
+								strokeWidth={2}
+								className={`${isLiking ? "scale-130" : ""} transition-transform hover:scale-120`}
+							/>
+							<span>{likes}</span>
+						</li>
+						<li className="flex items-center text-sm" hidden>
+							<MessageCircle size={20} /> <span className="px-1">Comment</span>
+						</li>
+						<li className="flex items-center text-sm" hidden>
+							<Send size={20} /> <span className="px-1">Share</span>
+						</li>
+					</ul>
+				</div>
+			</div>
 		</div>
 	);
 }

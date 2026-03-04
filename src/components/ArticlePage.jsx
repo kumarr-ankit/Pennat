@@ -10,7 +10,7 @@ function ArticlePage() {
 
 
 	return (
-		<div className="mt-9">
+		<div className="mt-3">
 			{articlesData?.length ? (
 				<div
 					className="flex justify-center  flex-col items-center w-full box-border pb-8 

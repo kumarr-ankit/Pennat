@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "./input.css";
 import Tiptap from "./components/Tiptap.jsx";
+import Email from "./components/Email.jsx";
 
 createRoot(document.getElementById("root")).render(
 	<StrictMode>

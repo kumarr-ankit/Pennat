@@ -4,6 +4,7 @@ import { AlertColors } from "./ui/AlertColors";
 import { AlertBasic } from "./ui/AlertBasic";
 import { useNavigate } from "react-router-dom";
 import { ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 
 function Signup() {
 	const [errorMsg, setErrorMsg] = useState(null);
@@ -42,7 +43,7 @@ function Signup() {
 			console.log("Data is.");
 			console.log(data);
 			setErrorMsg(null);
-			alert(
+			toast(
 				"💡 Please remember your password or copy it. Password : " +
 					passwordRef.current.value
 			);
@@ -106,13 +107,14 @@ function Signup() {
 
 			<div className="">
 				<p className="text-5xl    ml-4   mt-4   font-extrabold font-fontVerdana md:text-7xl sm:text-5xl text-white">
-					Give your <span className="text-blue-600  text-7xl ">stories</span> a home.
+					Give your <span className="text-blue-600  text-7xl ">stories</span> a
+					home.
 				</p>
 				<p className="px-2 text-xl border-s-4 border-blue-600 mt-8 ml-12 font-norml font-sans my-4  w-fit   text-gray-400  ">
 					Join a community of modern thinkers. Get started now.
 				</p>
 
-				{showForm && (
+				{!showForm && (
 					<form action="." onSubmit={handleSubmit}>
 						<div className="mx-12">
 							<label
@@ -127,7 +129,7 @@ function Signup() {
 								id="email"
 								required
 								placeholder="pennat@exmple.com"
-								className="p-2 border rounded-sm
+								className="p-2 border lowercase rounded-sm
             bg-slate-300 
            
             min-w-56 text-black"
@@ -172,7 +174,7 @@ function Signup() {
 						)}
 					</form>
 				)}
-				{!showForm && (
+				{showForm && (
 					<form action="." onSubmit={handleUserData}>
 						<div className="mx-12">
 							<label
@@ -227,7 +229,6 @@ function Signup() {
 								required
 								placeholder="YYYY-MM-DD"
 								minLength={4}
-								
 								className="p-2 border rounded-sm bg-slate-300 min-w-56 text-black"
 							/>{" "}
 						</div>
