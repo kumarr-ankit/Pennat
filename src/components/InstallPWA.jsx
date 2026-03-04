@@ -28,7 +28,7 @@ export default function InstallPWA({ show, Class }) {
 	}, []);
 
 	const handleInstallClick = async () => {
-		console.log("Being Clciked");
+		
 		if (!deferredPrompt) return;
 
 		// Show the install prompt
@@ -47,8 +47,6 @@ export default function InstallPWA({ show, Class }) {
 		//setShowInstallButton(false);
 	};
 
-	console.log("pwa", showInstallButton);
-	console.log("show?", showInstallButton == false);
 
 	return (
 		<>

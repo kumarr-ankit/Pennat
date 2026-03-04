@@ -131,7 +131,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-	console.log("SUPABASE URL:", import.meta.env.VITE_SUPABASE_URL);
+
 
 	const [articlesData, setArticlesData] = useState([]);
 	const [userInfo, setUserInfo] = useState();
@@ -139,15 +139,15 @@ function App() {
 	const [likedArcticles,setLikedArcticles] = useState(new Set());
 
 	const loadUser = useCallback(async () => {
-		console.log("Running App.💡💡");
+		
 
 		let res = await supabase.auth.getUser();
-		console.log("res", res);
+		
 
 		try {
 			if (res?.data?.user) {
 				let { id } = res.data.user;
-				console.log(id);
+				
 
 				let { data, error } = await supabase
 					.from("UserTable")
@@ -155,11 +155,11 @@ function App() {
 					.eq("user_id", id)
 					.single();
 				if (error) {
-					console.error("Database error:", error);
+				
 					console.log(error);
 					setUserInfo(null);
 				} else {
-					console.log(data);
+					
 					setUserInfo(data);
 				}
 			}
@@ -179,7 +179,7 @@ function App() {
 	}, [loadUser]);
 
 	// theme handle
-	updateStatusBar();
+
 	let theme = localStorage.getItem("theme");
 
 	if (theme == null) {
@@ -187,10 +187,6 @@ function App() {
 	}
 	const [isDark, setIsDark] = useState(localStorage.getItem("theme"));
 
-	useEffect(() => {
-		updateStatusBar(isDark === "dark");
-		updateTheme();
-	}, [isDark]);
 
 	//check for pwa
 	let isPwa = localStorage.getItem("pwa");

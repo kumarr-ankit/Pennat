@@ -34,6 +34,7 @@ function Login() {
 						code: null,
 						message: "Something went wrong.",
 					});
+					alert(error);
 				} else {
 					setErrorMsg(error);
 				}

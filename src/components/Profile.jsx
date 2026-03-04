@@ -120,6 +120,7 @@ function Profile() {
 			return null;
 		}
 
+		localStorage.removeItem("theme");
 		navigate("/login");
 	}
 	return (
@@ -136,13 +137,14 @@ function Profile() {
 					{/* Only show Edit Pencil if it's the user's own profile */}
 					{isOwnProfile && (
 						<div
-						
 							onClick={() => {
 								setControl((p) => !p);
 							}}
-							className={`p-2  relative text-foreground dark:bg-[#000000]  flex justify-end rounded-full ${control && 'bg-background text-foreground'}`}>
+							className={`p-2  relative text-foreground dark:bg-[#000000]  flex justify-end rounded-full ${
+								control && "bg-background text-foreground"
+							}`}>
 							{" "}
-							<Ellipsis size={24}  className={!control && 'text-amber-50'}/>
+							<Ellipsis size={24} className={!control && "text-amber-50"} />
 							<ul
 								hidden={!control}
 								className="absolute z-50 right-10  w-fit min-w-[20vw]   sm:min-w-[10vw]  rounded-md dark:bg-[#1F1B24] bg-gray-100 shadow-lg transition cursor-pointer p-1
