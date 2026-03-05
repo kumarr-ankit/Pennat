@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import parse from "html-react-parser";
@@ -7,14 +7,21 @@ import { toast } from "sonner";
 import Loader from "./Loader";
 import { Spinner } from "@/components/ui/spinner";
 import { userDp } from "../../public/avtar";
+import { userContext } from "../context/Context";
 function ArticleReader() {
 	const navigate = useNavigate();
+	const [userInfo] = useContext(userContext);
+	const userId = userInfo?.user_id;
 	const [searchParam] = useSearchParams();
+	const commentRef = useRef();
 
 	const articleId = searchParam.get("id");
 	const [article, setArticle] = useState(null);
 	const [author, setAuthor] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const [commentCount, setCommentCount] = useState(null);
+	let temporaryCount = useRef(0); //hold totalCount;
+	const [commentList, setCommentList] = useState([]);
 
 	useEffect(() => {
 		if (!articleId) {
@@ -25,13 +32,17 @@ function ArticleReader() {
 			try {
 				const { data, error } = await supabase
 					.from("ArticleTable")
-					.select(`*,UserTable(*)`)
+					.select(`*,UserTable(*),CommentTable(*)`)
 					.eq("id", articleId)
 					.single();
 
 				if (error) console.log(error);
+				if (!data) return;
 				setArticle(data);
+				setCommentCount(data?.comment_count);
 				console.log(data);
+				temporaryCount.current = data?.comment_count;
+				setCommentList(data?.CommentTable);
 				setAuthor(data.UserTable);
 			} catch (error) {
 				console.error("Error:", error);
@@ -74,6 +85,53 @@ function ArticleReader() {
 				</button>
 			</div>
 		);
+	}
+
+	async function handleComment() {
+		setCommentCount((prev) => prev + 1);
+		const dummyComment = {
+			id : crypto.randomUUID(),
+			comment : commentRef.current.value,
+
+		}
+		setCommentList(prev => [dummyComment,...prev]);
+		if (!userId) return;
+		const { data, error } = await supabase
+			.from("CommentTable")
+			.insert([
+				{
+					article_id: article?.article_id,
+					user_id: userId,
+					comment: commentRef.current.value,
+				},
+			])
+			.select()
+			.single();
+
+		if (error) {
+			toast("Comment Not Posted.");
+			setCommentCount((p) => p - 1);
+			console.log(error);
+			return;
+		} else if (data) {
+			temporaryCount.current = temporaryCount.current + 1;
+			const { data: countData, error: countError } = await supabase
+				.from("ArticleTable")
+				.update([{ comment_count: temporaryCount.current }])
+				.eq("article_id", article?.article_id)
+				.select();
+
+			if (countError) {
+				toast("Error while updating comment count.");
+				console.log(countError);
+				setCommentCount((p) => p - 1);
+				return;
+			}
+
+			if (countData) {
+				toast("Comment  Posted.");
+			}
+		}
 	}
 
 	return (
@@ -177,30 +235,37 @@ function ArticleReader() {
 					</div>
 				</div>
 
-				{/* Comments Section */}
-				{/* <div className="mt-12">
-					<h2 className="text-2xl font-bold mb-6">
-						Comments ({article.comment_count || 0})
-					</h2>
+				<div className="mt-12">
+					<h2 className="text-sm  mb-2 ml-2">Comments ({commentCount})</h2>
 
-					
 					<div className="mb-8">
 						<textarea
+							ref={commentRef}
 							placeholder="Write a comment..."
 							className="w-full p-4 border border-gray-300 dark:border-gray-700 rounded-lg
 	                     bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
 							rows="3"
 						/>
-						<button className="mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+						<button
+							className="mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+							onClick={handleComment}>
 							Post Comment
 						</button>
 					</div>
 
-				
-					<p className="text-gray-500 dark:text-gray-400">
-						No comments yet. Be the first!
-					</p>
-				</div> */}
+					<div className="text-gray-500 dark:text-gray-400">
+						
+						{commentList && (
+							<div>
+								{commentList.map((comment) => {
+									return <div key={comment.id}
+									className="my-2 bg-gray-800 border p-4"
+									>{comment.comment}</div>;
+								})}
+							</div>
+						)}
+					</div>
+				</div>
 
 				{/* <div className="mt-16">
 					<h2 className="text-2xl font-bold mb-6">

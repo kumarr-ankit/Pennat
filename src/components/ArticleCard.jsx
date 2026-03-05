@@ -16,9 +16,12 @@ function ArticleCard({ article }) {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const preview = article?.preview;
 
+	console.log(article)
+
 	let author_id = article?.author_id;
 	let articleId = article?.article_id;
 	let user_id = userInfo?.user_id;
+	let comment_count = article?.comment_count ?? 10;
 	const navigate = useNavigate();
 
 	async function handleDelete() {
@@ -180,12 +183,17 @@ function ArticleCard({ article }) {
 								size={20}
 								fill={isLiked ? "#ff0000" : "none"}
 								strokeWidth={2}
-								className={`${isLiking ? "scale-130" : ""} transition-transform hover:scale-120`}
+								className={`${
+									isLiking ? "scale-130" : ""
+								} transition-transform hover:scale-120`}
 							/>
 							<span>{likes}</span>
 						</li>
-						<li className="flex items-center text-sm" hidden>
-							<MessageCircle size={20} /> <span className="px-1">Comment</span>
+						<li className="flex items-center text-sm">
+							<MessageCircle size={18} />{" "}
+							<span className="px-1">
+								{comment_count ? comment_count : "Comment"}
+							</span>
 						</li>
 						<li className="flex items-center text-sm" hidden>
 							<Send size={20} /> <span className="px-1">Share</span>

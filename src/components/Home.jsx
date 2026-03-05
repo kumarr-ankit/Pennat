@@ -31,7 +31,7 @@ function Home() {
 				const response = await supabase
 					.from("ArticleTable")
 					.select(
-						"likes,article_id,id,title,author_id,body,UserTable(name,username,profile_img,user_id)"
+						"likes,comment_count,article_id,id,title,author_id,body,UserTable(name,username,profile_img,user_id)"
 					);
 
 				if (response.error) {
