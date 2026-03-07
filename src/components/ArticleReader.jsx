@@ -124,6 +124,12 @@ function ArticleReader() {
 			const dummyComment = {
 				id: crypto.randomUUID(),
 				comment: commentText,
+
+				UserTable : {
+					username :userInfo?.username,
+					profile_img : userInfo?.profile_img
+					
+				}
 			};
 			setCommentCount((prev) => prev + 1);
 			setCommentList((prev) => [dummyComment, ...prev]);
@@ -272,7 +278,7 @@ function ArticleReader() {
 							<img
 								src={author?.profile_img || userDp}
 								alt={author?.username}
-								className="h-10 rounded-full object-cover cursor-pointer"
+								className="h-10 mr-4 rounded-full object-cover cursor-pointer"
 								onClick={() => navigate(`/profile/${author?.username}`)}
 							/>
 							<div className="flex-1">
@@ -361,9 +367,9 @@ function ArticleReader() {
 						</div>
 					</div>
 
-					<div className="text-gray-500  dark:text-gray-400">
+					<div className="text-gray-500 w-full dark:text-gray-400">
 						{commentList.length > 0 && (
-							<div className="w-full rounded-md dark:bg-[#111112]  p-1">
+							<div className="w-fullrounded-md  p-1">
 								{commentList.map((comment) => {
 									return (
 										<CommentCard
