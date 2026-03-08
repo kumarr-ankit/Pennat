@@ -7,8 +7,9 @@ import { toast } from "sonner";
 import Loader from "./Loader";
 import { Spinner } from "@/components/ui/spinner";
 import { userDp } from "../../public/avtar";
-import { userContext } from "../context/Context";
+import { dataContext, userContext } from "../context/Context";
 import CommentCard from "./CommentCard";
+
 function ArticleReader() {
 	const navigate = useNavigate();
 	const [userInfo] = useContext(userContext);
@@ -20,18 +21,24 @@ function ArticleReader() {
 	const [author, setAuthor] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [commentCount, setCommentCount] = useState(null);
-	let temporaryCount = useRef(0); //hold totalCount;
+	let temporaryCount = useRef(0);
 	const [commentList, setCommentList] = useState([]);
 	const [canComment, setCanComment] = useState(true);
 	const [showBtn, setShowBtn] = useState();
+	const [isLiking, setIsLiking] = useState(false);
+
+	const [like, setLike] = useState(null); // null = loading state
+	const [isLiked, setIsLiked] = useState(false); // default false, fetch ke baad set hoga
+
+	let [, , likedArcticles, setLikedArcticles] = useContext(dataContext);
 
 	useEffect(() => {
 		if (!articleId) {
 			navigate("/home");
-			return null;
+			return;
 		}
+
 		const fetchArticle = async () => {
-			console.log("Calling Api 🔥🔥");
 			try {
 				const { data, error } = await supabase
 					.from("ArticleTable")
@@ -41,31 +48,49 @@ function ArticleReader() {
 
 				if (error) console.log(error);
 				if (!data) return;
+
 				setArticle(data);
 				setCommentCount(data?.comment_count);
-				console.log(data);
 				temporaryCount.current = data?.comment_count;
-
 				setAuthor(data.UserTable);
 
-				let { data: commentData, error: commentError } = await supabase
+				//DB se like lena hai
+				setLike(data.likes ?? 0);
+
+				if (userId) {
+					if (likedArcticles.has(data.article_id)) {
+						//liked article loaded 
+						setIsLiked(true);
+					} else {
+						//liked article not loaded
+						const { data: likeData } = await supabase
+							.from("LikesTable")
+							.select("article_id")
+							.eq("article_id", data.article_id)
+							.eq("user_id", userId)
+							.maybeSingle(); 
+
+						if (likeData) {
+
+							setIsLiked(true);
+							setLikedArcticles((prev) => {
+								const newSet = new Set(prev);
+								newSet.add(data.article_id);
+								return newSet;
+							});
+						}
+					}
+				}
+				//Comment
+				const { data: commentData, error: commentError } = await supabase
 					.from("CommentTable")
 					.select("*,UserTable(username,profile_img)")
 					.eq("article_id", data.article_id);
 
-				if (commentError) {
-					console.log(commentError);
-					return;
-				}
-
-				if (commentData) {
-					console.log("Here is Comment Data");
-					setCommentList(commentData);
-					console.log(commentData);
-				}
+				if (commentError) return;
+				if (commentData) setCommentList(commentData);
 			} catch (error) {
 				console.error("Error:", error);
-
 				toast("❌ Failed to load the article. Please try after few minutes.");
 			} finally {
 				setLoading(false);
@@ -73,7 +98,7 @@ function ArticleReader() {
 		};
 
 		fetchArticle();
-	}, [articleId]);
+	}, [articleId, navigate, userId, likedArcticles, setLikedArcticles]);
 
 	useEffect(() => {
 		if (commentRef.current?.value) {
@@ -101,7 +126,7 @@ function ArticleReader() {
 
 	if (!article) {
 		return (
-			<div className=" mx-auto px-4 py-16 text-center h-screen ">
+			<div className="mx-auto px-4 py-16 text-center h-screen">
 				<h1 className="text-md font-bold mb-4">
 					Error Occurred while loading article.
 				</h1>
@@ -124,16 +149,15 @@ function ArticleReader() {
 			const dummyComment = {
 				id: crypto.randomUUID(),
 				comment: commentText,
-
-				UserTable : {
-					username :userInfo?.username,
-					profile_img : userInfo?.profile_img
-					
-				}
+				UserTable: {
+					username: userInfo?.username,
+					profile_img: userInfo?.profile_img,
+				},
 			};
 			setCommentCount((prev) => prev + 1);
 			setCommentList((prev) => [dummyComment, ...prev]);
 			if (!userId) return;
+
 			const { data, error } = await supabase
 				.from("CommentTable")
 				.insert([
@@ -166,9 +190,7 @@ function ArticleReader() {
 					return;
 				}
 
-				if (countData) {
-					toast("Comment  Posted.");
-				}
+				if (countData) toast("Comment Posted.");
 			}
 		}
 
@@ -177,9 +199,6 @@ function ArticleReader() {
 	}
 
 	async function deleteComment(commentId, comment) {
-		console.log("Comment Id " + commentId + " Deleted.");
-		console.log(comment);
-		// Quick Ui update
 		temporaryCount.current = temporaryCount.current - 1;
 		setCommentCount((p) => p - 1);
 		setCommentList((prev) => prev.filter((com) => com.id != comment.id));
@@ -192,7 +211,6 @@ function ArticleReader() {
 
 		if (CommentTableError) {
 			toast("Error occurred, while deleting comment.");
-
 			setCommentCount((p) => p + 1);
 			setCommentList((prev) => [comment, ...prev]);
 			return;
@@ -214,25 +232,84 @@ function ArticleReader() {
 				return;
 			}
 
-			if (commentCountData) {
-				toast("Comment Deleted.");
-			}
+			if (commentCountData) toast("Comment Deleted.");
 		}
 	}
 
-	// return <div>
+	async function handleLike() {
+		if (isLiking) return;
+		setIsLiking(true);
 
-	// 	<div className="h-24 w-24 bg-red-800 justify-self-center self-center
-	// 	hover:bg-green-400
-	// 	transition
-	// 	hover:translate-x-1
-	// 	hover:animate-pulse
-	// hover:skew-z-12
-	// hover:rotate-x-60
-	// 	hover:rotate-180
-	// 	duration-700
-	// 	"></div>
-	// </div>
+		
+		const wasLiked = isLiked;
+
+		
+		setLike((prev) => (wasLiked ? prev - 1 : prev + 1));
+		setIsLiked(!wasLiked);
+		setLikedArcticles((prev) => {
+			const newSet = new Set(prev);
+			wasLiked
+				? newSet.delete(article?.article_id)
+				: newSet.add(article?.article_id);
+			return newSet;
+		});
+
+		
+		const { error: likeError } = await (wasLiked
+			? supabase
+					.from("LikesTable")
+					.delete()
+					.eq("article_id", article?.article_id)
+					.eq("user_id", userId)
+			: supabase
+					.from("LikesTable")
+					.insert({ article_id: article?.article_id, user_id: userId }));
+
+		if (likeError) {
+			toast("❌ Error while liking");
+			setLike((prev) => (wasLiked ? prev + 1 : prev - 1));
+			setIsLiked(wasLiked);
+			setLikedArcticles((prev) => {
+				const newSet = new Set(prev);
+				wasLiked
+					? newSet.add(article?.article_id)
+					: newSet.delete(article?.article_id);
+				return newSet;
+			});
+			setIsLiking(false);
+			return;
+		}
+
+	
+		const { data: freshData, error: fetchError } = await supabase
+			.from("ArticleTable")
+			.select("likes")
+			.eq("article_id", article?.article_id)
+			.single();
+
+		if (fetchError) {
+			toast("❌ Error fetching like count");
+			setLike((prev) => (wasLiked ? prev + 1 : prev - 1));
+			setIsLiked(wasLiked);
+			setIsLiking(false);
+			return;
+		}
+
+	
+		const { error: articleError } = await supabase
+			.from("ArticleTable")
+			.update({ likes: freshData.likes + (wasLiked ? -1 : 1) })
+			.eq("article_id", article?.article_id);
+
+		if (articleError) {
+			toast("❌ Error updating like count");
+			setLike((prev) => (wasLiked ? prev + 1 : prev - 1));
+			setIsLiked(wasLiked);
+		}
+
+		setIsLiking(false);
+	}
+
 	return (
 		<div className="min-h-screen bg-white dark:bg-gray-900">
 			<div className="max-w-4xl mx-auto px-4 pt-8">
@@ -244,36 +321,25 @@ function ArticleReader() {
 				</button>
 			</div>
 
-			<article className=" max-w-3xl mx-auto px-4 py-8">
-				{/* Title */}
-				<h1 className=" text-4xl md:text-6xl sm:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
+			<article className="max-w-3xl mx-auto px-4 py-8">
+				<h1 className="text-4xl md:text-6xl sm:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
 					{article?.title}
 				</h1>
 
-				<div className="flex flex-col  items-start gap-4 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
+				<div className="flex flex-col items-start gap-4 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
 					<div className="flex-1">
 						<div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
 							<span>{formatDate(article.created_at)}</span>
-							{/* <span>•</span>
-							<span>5 min read</span> */}
 							{article.view_count && (
 								<>
 									<span>•</span>
 									<span>{article.view_count} views</span>
 								</>
 							)}
-							<span className="mr-1 text-xl mb-1">•</span>
-							<span className="flex items-center">
-								<Heart size={12} />
-
-								<span className="font-semibold mx-1">
-									{article.likes || "Like"}
-								</span>
-							</span>
 						</div>
 					</div>
 
-					<div className="  rounded-xl">
+					<div className="rounded-xl">
 						<div className="flex items-center gap-1">
 							<img
 								src={author?.profile_img || userDp}
@@ -287,7 +353,7 @@ function ArticleReader() {
 									onClick={() => navigate(`/profile/${author?.username}`)}>
 									{author?.name || author?.username}
 								</h3>
-								<p className="text-gray-600 text-xs dark:text-gray-400 ">
+								<p className="text-gray-600 text-xs dark:text-gray-400">
 									{author?.about || "Hey, I write on Pennat."}
 								</p>
 							</div>
@@ -295,72 +361,59 @@ function ArticleReader() {
 					</div>
 				</div>
 
-				{/* Article Body */}
 				<div className="font-[roboto] dark:text-[#E0E0E0] text-xl sm:text-2xl mb-8">
 					{parse(article.body)}
 				</div>
 
-				{/* <div className="flex items-center gap-3 py-8 border-gray-200 dark:border-gray-700">
-				
+				<div className="flex items-center gap-3 py-8 border-gray-200 dark:border-gray-700">
 					<button
-						className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300
-	                         dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-						<Heart size={18} />
-					
-						<span className="font-semibold">{article.likes || "Like"}</span>
+						onClick={handleLike}
+						className="flex items-center gap-2 px-4 py-2 rounded-full border  border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+						<Heart
+							size={20}
+							fill={isLiked ? "#ff0000" : "none"}
+							strokeWidth={2}
+							className={`${
+								isLiked ? "stroke-red-600" : ""
+							} transition-transform hover:scale-120`}
+						/>
+				
+						<span className="text-sm">{like ?? "Like"}</span>
 					</button>
 
-				
-					<button
-						className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300
-	                         dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+					<button className=" items-center gap-2 px-4 py-2 rounded-lg hidden border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
 						<Bookmark size={18} />
 						<span className="text-sm">Save</span>
 					</button>
 
-				
-					<button
-						className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300
-	                         dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+					<button className=" items-center gap-2 px-4 py-2 rounded-lg hidden  border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
 						<Share size={18} />
 						<span className="text-sm">Share</span>
 					</button>
-				</div> */}
-
-				{/* Author*/}
+				</div>
 
 				<div className="mt-12">
-					<h2 className="text-lg font-bold  mb-2  ml-2 ">
-						{commentCount ?? ""} {commentCount > 1 ? "Comments" : "Comment"}{" "}
+					<h2 className="text-lg font-bold mb-2 ml-2">
+						{commentCount ?? ""} {commentCount > 1 ? "Comments" : "Comment"}
 					</h2>
 
 					<div>
 						<textarea
 							onChange={(e) => {
-								if (e.target.value) {
-									setShowBtn(true);
-								} else {
-									setShowBtn(false);
-								}
+								if (e.target.value) setShowBtn(true);
+								else setShowBtn(false);
 							}}
 							ref={commentRef}
 							placeholder="Write a comment..."
-							className=" 
-							block
-						field-sizing-content
-							overflow-x-clip
-							h-fit
-							w-full px-2 py-0 focus:py-1 border-b border-gray-300 dark:border-gray-700 rounded-xs
-	                     focus:outline-none  "
+							className="block field-sizing-content overflow-x-clip h-fit w-full px-2 py-0 focus:py-1 border-b border-gray-300 dark:border-gray-700 rounded-xs focus:outline-none"
 						/>
 						<div className="w-full mt-1 flex justify-end">
 							<button
 								disabled={!canComment}
-								className={`transition  duration-700 ${
+								className={`transition duration-700 ${
 									showBtn ? "opacity-100 block" : "opacity-0 collapse"
 								}
-								outline-0
-								px-3 py-2 mt-1 text-sm bg-gray-900 text-white dark:bg-gray-100 dark:text-black border rounded-full hover:bg-gray-700 dark:border-0 disabled:bg-gray-400`}
+								outline-0 px-3 py-2 mt-1 text-sm bg-gray-900 text-white dark:bg-gray-100 dark:text-black border rounded-full hover:bg-gray-700 dark:border-0 disabled:bg-gray-400`}
 								onClick={handleComment}>
 								{canComment ? "Post Comment" : "Please Wait.."}
 							</button>
@@ -369,18 +422,16 @@ function ArticleReader() {
 
 					<div className="text-gray-500 w-full dark:text-gray-400">
 						{commentList.length > 0 && (
-							<div className="w-fullrounded-md  p-1">
-								{commentList.map((comment) => {
-									return (
-										<CommentCard
-											user_id={userId}
-											deleteComment={deleteComment}
-											setCommentList={setCommentList}
-											key={comment.id}
-											comment={comment}
-										/>
-									);
-								})}
+							<div className="w-full rounded-md p-1">
+								{commentList.map((comment) => (
+									<CommentCard
+										user_id={userId}
+										deleteComment={deleteComment}
+										setCommentList={setCommentList}
+										key={comment.id}
+										comment={comment}
+									/>
+								))}
 							</div>
 						)}
 
@@ -391,16 +442,6 @@ function ArticleReader() {
 						)}
 					</div>
 				</div>
-
-				{/* <div className="mt-16">
-					<h2 className="text-2xl font-bold mb-6">
-						More from{" "}
-						{article.profiles?.display_name || article.profiles?.username}
-					</h2>
-					<p className="text-gray-500 dark:text-gray-400">
-						Related articles will appear here
-					</p>
-				</div> */}
 			</article>
 		</div>
 	);

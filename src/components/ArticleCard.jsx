@@ -7,6 +7,9 @@ import { NavLink, useNavigate } from "react-router-dom";
 import parse from "html-react-parser";
 import { toast } from "sonner";
 
+
+
+
 function ArticleCard({ article }) {
 	const { name, username, profile_img } = article.UserTable;
 	let [, , likedArcticles, setLikedArcticles] = useContext(dataContext);
@@ -15,8 +18,8 @@ function ArticleCard({ article }) {
 	const [, setArticles] = useContext(dataContext);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const preview = article?.preview;
+  
 
-	console.log(article)
 
 	let author_id = article?.author_id;
 	let articleId = article?.article_id;
@@ -39,8 +42,8 @@ function ArticleCard({ article }) {
 
 	const [likes, setLikes] = useState(article?.likes ?? 0);
 	const [isLiking, setIsLiking] = useState(false);
-	const isLiked = likedArcticles.has(articleId);
-
+	const isLiked = likedArcticles.has(article.article_id);
+	
 	async function handleLikeCount(e) {
 		e.preventDefault();
 		e.stopPropagation();

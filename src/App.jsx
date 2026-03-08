@@ -178,11 +178,17 @@ function App() {
 
 	useEffect(() => {
 		let statusBar = document.getElementById("statusBar");
+		let body = document.querySelector('body');
+
 
 		if (isDark == "dark" && statusBar != null) {
 			statusBar.setAttribute("content", "#000000");
+			body.classList.add("dark");
+			
+
 		} else if (isDark == "light" && statusBar != null) {
 			statusBar.setAttribute("content", "#ffffff");
+			if(body.classList.contains("dark")) body.classList.remove("dark");
 		}
 	}, [isDark]);
 
@@ -199,9 +205,7 @@ function App() {
 	if (loading)
 		return (
 			<div
-				className={`${
-					isDark == "dark" ? "dark" : ""
-				} min-h-screen flex items-center justify-center bg-background`}>
+				className={` min-h-screen flex items-center justify-center bg-background`}>
 				<div className="flex items-center gap-2 text-foreground ">
 					<LoaderCircle size={24} className="animate-spin" />
 					<span>Hold tight...</span>

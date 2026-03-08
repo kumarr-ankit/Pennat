@@ -7,9 +7,7 @@ function CommentCard({ comment, deleteComment, user_id }) {
 	const { UserTable: commenter } = comment;
 	const {created_at} = comment;
 	let date = Date.parse(created_at);
-	console.log(created_at)
-	console.log(date.toLocaleString("en-US"))
-	console.log(commenter);
+	
 	const [menuOpen, setMenuOpen] = useState();
 	function handleDelete(e) {
 		e.stopPropagation();
