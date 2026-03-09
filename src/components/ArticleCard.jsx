@@ -1,14 +1,19 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import userDp from "../assets/user.png";
 import { dataContext, userContext } from "../context/Context";
-import { Ellipsis, Heart, MessageCircle, Send, Trash2 } from "lucide-react";
+import {
+	BookOpenCheck,
+	Ellipsis,
+	Heart,
+	MessageCircle,
+	Send,
+	Trash2,
+} from "lucide-react";
 import supabase from "../config/supabaseClient";
 import { NavLink, useNavigate } from "react-router-dom";
 import parse from "html-react-parser";
 import { toast } from "sonner";
-
-
-
+import { CalculateTime } from "../utils/CalculateTime";
 
 function ArticleCard({ article }) {
 	const { name, username, profile_img } = article.UserTable;
@@ -18,8 +23,6 @@ function ArticleCard({ article }) {
 	const [, setArticles] = useContext(dataContext);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const preview = article?.preview;
-  
-
 
 	let author_id = article?.author_id;
 	let articleId = article?.article_id;
@@ -39,11 +42,11 @@ function ArticleCard({ article }) {
 			}
 		}
 	}
-
+	const [time] = useState(CalculateTime(article?.body ?? ""));
 	const [likes, setLikes] = useState(article?.likes ?? 0);
 	const [isLiking, setIsLiking] = useState(false);
 	const isLiked = likedArcticles.has(article.article_id);
-	
+
 	async function handleLikeCount(e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -137,26 +140,35 @@ function ArticleCard({ article }) {
 					</div>
 				</div>
 
-				{user_id === author_id && (
-					<div className="relative">
-						<button
-							onClick={() => setIsMenuOpen(!isMenuOpen)}
-							className="p-1.5 rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-[#252525] transition-colors cursor-pointer">
-							<Ellipsis size={20} />
-						</button>
-
-						{isMenuOpen && (
-							<div className="absolute right-0 mt-2 w-36 bg-white dark:bg-[#1F1B24] border border-gray-200 dark:border-gray-800 rounded-lg shadow-xl z-10 py-1">
+				<div className="flex flex-row-reverse items-center">
+					<div>
+						{user_id === author_id && (
+							<div className="relative">
 								<button
-									className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
-									onClick={handleDelete}>
-									<Trash2 size={14} />
-									Delete
+									onClick={() => setIsMenuOpen(!isMenuOpen)}
+									className="p-1.5 flex items-center rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-[#252525] transition-colors cursor-pointer">
+									<Ellipsis size={20} />
 								</button>
+
+								{isMenuOpen && (
+									<div className="absolute right-0 mt-2 w-36 bg-white dark:bg-[#1F1B24] border border-gray-200 dark:border-gray-800 rounded-lg shadow-xl z-10 py-1">
+										<button
+											className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+											onClick={handleDelete}>
+											<Trash2 size={14} />
+											Delete
+										</button>
+									</div>
+								)}
 							</div>
 						)}
 					</div>
-				)}
+
+					<span className="flex flex-row items-center">
+						<BookOpenCheck className="ml-2"color="gray" size={14} />
+						<span className="px-1 text-xs flex items-center text-gray-500"> {time?.text}</span>
+					</span>
+				</div>
 			</div>
 
 			<div

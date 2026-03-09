@@ -2,13 +2,23 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import parse from "html-react-parser";
-import { Bookmark, BookMarked, ChevronLeft, Heart, Share } from "lucide-react";
+import {
+	Bookmark,
+	BookMarked,
+	BookOpenCheck,
+	CalendarDays,
+	ChevronLeft,
+	Heart,
+	Hourglass,
+	Share,
+} from "lucide-react";
 import { toast } from "sonner";
 import Loader from "./Loader";
 import { Spinner } from "@/components/ui/spinner";
 import { userDp } from "../../public/avtar";
 import { dataContext, userContext } from "../context/Context";
 import CommentCard from "./CommentCard";
+import { CalculateTime } from "../utils/CalculateTime";
 
 function ArticleReader() {
 	const navigate = useNavigate();
@@ -29,6 +39,7 @@ function ArticleReader() {
 
 	const [like, setLike] = useState(null); // null = loading state
 	const [isLiked, setIsLiked] = useState(false); // default false, fetch ke baad set hoga
+	const [time, setTime] = useState();
 
 	let [, , likedArcticles, setLikedArcticles] = useContext(dataContext);
 
@@ -50,6 +61,7 @@ function ArticleReader() {
 				if (!data) return;
 
 				setArticle(data);
+				setTime(CalculateTime(data.body ?? ""));
 				setCommentCount(data?.comment_count);
 				temporaryCount.current = data?.comment_count;
 				setAuthor(data.UserTable);
@@ -59,7 +71,7 @@ function ArticleReader() {
 
 				if (userId) {
 					if (likedArcticles.has(data.article_id)) {
-						//liked article loaded 
+						//liked article loaded
 						setIsLiked(true);
 					} else {
 						//liked article not loaded
@@ -68,10 +80,9 @@ function ArticleReader() {
 							.select("article_id")
 							.eq("article_id", data.article_id)
 							.eq("user_id", userId)
-							.maybeSingle(); 
+							.maybeSingle();
 
 						if (likeData) {
-
 							setIsLiked(true);
 							setLikedArcticles((prev) => {
 								const newSet = new Set(prev);
@@ -240,10 +251,8 @@ function ArticleReader() {
 		if (isLiking) return;
 		setIsLiking(true);
 
-		
 		const wasLiked = isLiked;
 
-		
 		setLike((prev) => (wasLiked ? prev - 1 : prev + 1));
 		setIsLiked(!wasLiked);
 		setLikedArcticles((prev) => {
@@ -254,7 +263,6 @@ function ArticleReader() {
 			return newSet;
 		});
 
-		
 		const { error: likeError } = await (wasLiked
 			? supabase
 					.from("LikesTable")
@@ -280,7 +288,6 @@ function ArticleReader() {
 			return;
 		}
 
-	
 		const { data: freshData, error: fetchError } = await supabase
 			.from("ArticleTable")
 			.select("likes")
@@ -295,7 +302,6 @@ function ArticleReader() {
 			return;
 		}
 
-	
 		const { error: articleError } = await supabase
 			.from("ArticleTable")
 			.update({ likes: freshData.likes + (wasLiked ? -1 : 1) })
@@ -329,7 +335,24 @@ function ArticleReader() {
 				<div className="flex flex-col items-start gap-4 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
 					<div className="flex-1">
 						<div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-							<span>{formatDate(article.created_at)}</span>
+							<span
+							title="Published Date"
+							className="flex flex-row items-center">
+								<CalendarDays className="ml-2" size={16} />
+								<span className="px-1 flex">
+									{" "}
+									{formatDate(article.created_at)}
+								</span>
+							</span>
+							<>
+								{time && (
+									<span title="Expected reading duration" className="flex flex-row items-center">
+										<span>•</span>
+										<BookOpenCheck className="ml-2" size={16} />
+										<span className="px-1 flex"> {time.text}</span>
+									</span>
+								)}
+							</>
 							{article.view_count && (
 								<>
 									<span>•</span>
@@ -377,7 +400,7 @@ function ArticleReader() {
 								isLiked ? "stroke-red-600" : ""
 							} transition-transform hover:scale-120`}
 						/>
-				
+
 						<span className="text-sm">{like ?? "Like"}</span>
 					</button>
 

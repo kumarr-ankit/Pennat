@@ -21,6 +21,7 @@ import NotAllowed from "./components/NotAllowed";
 import ArticleReader from "./components/ArticleReader";
 import ResetPassword from "./components/ResetPassword";
 import PasswordFlow from "./components/PasswordFlow";
+import { CalculateTime } from "./utils/CalculateTime";
 
 const router = createBrowserRouter([
 	{
@@ -28,6 +29,14 @@ const router = createBrowserRouter([
 		element: (
 			<>
 				<Auth />
+			</>
+		),
+	},
+{
+		path: "/read",
+		element: (
+			<>
+				<CalculateTime />
 			</>
 		),
 	},
