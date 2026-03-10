@@ -23,6 +23,7 @@ export default defineConfig({
 				"favicon.ico",
 				"apple-touch-icon.png",
 				"masked-icon.svg",
+				"*.json",
 				"pwa-*.png", // you'll add these later
 			],
 			workbox: {
