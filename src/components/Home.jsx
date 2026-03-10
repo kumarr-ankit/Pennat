@@ -36,8 +36,8 @@ function Home() {
 
 				if (response.error) {
 					console.error("Database error:", response.error);
-					alert("Error loading articles");
-					navi("/login", { replace: true });
+					
+					
 					return null;
 				}
 				if (response.data) {

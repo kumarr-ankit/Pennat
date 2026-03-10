@@ -32,11 +32,35 @@ function ArticleCard({ article }) {
 
 	async function handleDelete() {
 		if (article?.id) {
-			const { status } = await supabase
+			const { error: likesError } = await supabase
+				.from("LikesTable")
+				.delete()
+				.eq("article_id", article.id);
+
+			if (likesError) {
+				console.log(likesError);
+				return;
+			}
+
+			const { error: CommentError } = await supabase
+				.from("CommentTable")
+				.delete()
+				.eq("article_id", article.id);
+
+			if (CommentError) {
+				console.log(CommentError);
+				return;
+			}
+
+			const { status, error } = await supabase
 				.from("ArticleTable")
 				.delete()
-				.eq("id", article.id);
+				.eq("article_id", article.id);
 
+			if (error) {
+				console.log(error);
+				toast("Can't delete Article.");
+			}
 			if (status === 204) {
 				setArticles((p) => p.filter((el) => el.id !== article.id));
 			}
@@ -165,8 +189,11 @@ function ArticleCard({ article }) {
 					</div>
 
 					<span className="flex flex-row items-center">
-						<BookOpenCheck className="ml-2"color="gray" size={14} />
-						<span className="px-1 text-xs flex items-center text-gray-500"> {time?.text}</span>
+						<BookOpenCheck className="ml-2" color="gray" size={14} />
+						<span className="px-1 text-xs flex items-center text-gray-500">
+							{" "}
+							{time?.text}
+						</span>
 					</span>
 				</div>
 			</div>

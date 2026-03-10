@@ -8,9 +8,13 @@ function Auth() {
 	const navi = useNavigate();
 
 	const [userInfo, isLoading] = useContext(userContext);
-	
+	if (navigator.onLine) {
+		console.log("Device seems to be connected to a network.");
+	} else {
+		console.log("Device is likely offline from a network perspective.");
+	}
+
 	useEffect(() => {
-		
 		async function loadUser() {
 			if (isLoading) return;
 
@@ -44,7 +48,7 @@ function Auth() {
 				</div>
 			)}
 
-			{(!isLoading && !userInfo)  && (
+			{!isLoading && !userInfo && (
 				<div className="bg-orange-200 w-fit m-auto p-4 rounded-xl border border-red-400 text-red-700">
 					something went wrong.
 				</div>

@@ -22,6 +22,8 @@ import ArticleReader from "./components/ArticleReader";
 import ResetPassword from "./components/ResetPassword";
 import PasswordFlow from "./components/PasswordFlow";
 import { CalculateTime } from "./utils/CalculateTime";
+import Offline from "./components/NoInternet";
+import InternetStatus from "./components/InternetStatus";
 
 const router = createBrowserRouter([
 	{
@@ -32,7 +34,7 @@ const router = createBrowserRouter([
 			</>
 		),
 	},
-{
+	{
 		path: "/read",
 		element: (
 			<>
@@ -143,6 +145,7 @@ function App() {
 	const [userInfo, setUserInfo] = useState();
 	const [loading, setLoading] = useState(true);
 	const [likedArcticles, setLikedArcticles] = useState(new Set());
+	let isOnline = InternetStatus();
 
 	const loadUser = useCallback(async () => {
 		let res = await supabase.auth.getUser();
@@ -172,32 +175,29 @@ function App() {
 		}
 	}, []);
 
+
 	//load user dat first time
 
 	useEffect(() => {
 		loadUser();
-	}, [loadUser]);
+	}, [loadUser,isOnline]);
 
 	// theme handle
 
 	let theme = localStorage.getItem("theme");
 
-	
 	const [isDark, setIsDark] = useState(localStorage.getItem("theme"));
 
 	useEffect(() => {
 		let statusBar = document.getElementById("statusBar");
-		let body = document.querySelector('body');
-
+		let body = document.querySelector("body");
 
 		if (isDark == "dark" && statusBar != null) {
 			statusBar.setAttribute("content", "#000000");
 			body.classList.add("dark");
-			
-
 		} else if (isDark == "light" && statusBar != null) {
 			statusBar.setAttribute("content", "#ffffff");
-			if(body.classList.contains("dark")) body.classList.remove("dark");
+			if (body.classList.contains("dark")) body.classList.remove("dark");
 		}
 	}, [isDark]);
 
@@ -209,8 +209,14 @@ function App() {
 	let isPwa = localStorage.getItem("pwa");
 	if (isPwa == null) {
 		localStorage.setItem("pwa", true);
+
+
+
 	}
 
+	if(!isOnline){
+		return <Offline />
+	}
 	if (loading)
 		return (
 			<div
@@ -222,6 +228,7 @@ function App() {
 			</div>
 		);
 
+	
 	return (
 		<div
 			id="app"
@@ -232,7 +239,7 @@ function App() {
 		mx-0
 		*:mx-0
 		*:my:0
-		
+
 		*:box-border
 		dark:bg-black
 		`}>
