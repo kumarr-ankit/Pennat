@@ -6,7 +6,7 @@ import { themeContext } from "../context/Context";
 function NavbarPage() {
 	const naviagtors = useNavigate();
 	const [isDark, setIsDark] = useContext(themeContext);
-	const [showMenu, setShowMenu] = useState(true);
+	const [showMenu, setShowMenu] = useState(false);
 
 	useEffect(() => {
 		console.log("Calling Theme Change");
