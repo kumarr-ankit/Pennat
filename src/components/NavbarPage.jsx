@@ -22,7 +22,7 @@ function NavbarPage() {
 		dark:bg-black
 		top-0  z-2  py-1">
 			<div>
-				<h1 className="font-bold text-3xl  pl-2">Pennat</h1>
+				<h1 className="font-bold text-3xl mb-2 pl-2">Pennat</h1>
 			</div>
 			<div className="relative ">
 				<div
@@ -31,7 +31,7 @@ function NavbarPage() {
 						setShowMenu((prev) => !prev);
 					}}>
 					<span
-						className={`flex flex-row hover:cursor-pointer items-center px-0.5 py-0.5 rounded-lg border  mb-2 ${
+						className={`flex flex-row hover:cursor-pointer items-center px-0.5 py-0.5 rounded-lg border mb-1 ${
 							showMenu ? "border-foreground" : "border-transparent"
 						}`}>
 						{" "}
