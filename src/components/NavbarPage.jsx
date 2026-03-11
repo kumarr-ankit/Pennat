@@ -1,20 +1,18 @@
-import { Pen, Pencil, User } from "lucide-react";
-import React, { useContext, useEffect } from "react";
+import { Moon, Pen, Pencil, Sun, User } from "lucide-react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Switch } from "@/components/ui/switch";
 import { themeContext } from "../context/Context";
-
 
 function NavbarPage() {
 	const naviagtors = useNavigate();
 	const [isDark, setIsDark] = useContext(themeContext);
-	
-		useEffect(() => {
-		console.log("Calling Theme Change")
-		
+	const [showMenu, setShowMenu] = useState(true);
+
+	useEffect(() => {
+		console.log("Calling Theme Change");
+
 		console.log(isDark);
 	}, [isDark]);
-
 
 	return (
 		<nav
@@ -26,15 +24,48 @@ function NavbarPage() {
 			<div>
 				<h1 className="font-bold text-3xl mb-4 pl-2">Pennat</h1>
 			</div>
-			<div>
+			<div className="relative ">
+				<div
+					onClick={() => {
+						//e.stopPropagation();
+						setShowMenu((prev) => !prev);
+					}}>
+					<span
+						className={`flex flex-row hover:cursor-pointer items-center px-0.5 py-0.5 rounded-lg border  mb-2 ${
+							showMenu ? "border-foreground" : "border-transparent"
+						}`}>
+						{" "}
+						<User size={28} fill="#303033" strokeWidth={1} strokeOpacity={0} />
+						<span className="hidden md:block pr-2 ">You</span>
+					</span>
+				</div>
+
 				<ul
-					className="flex
-             justify-evenly  
-             *:p-2
-              *:px-3
-          
-             *:my-1
-              *:rounded-full items-center [&>li:hover]:cursor-pointer">
+					className={`right-0 px-2  py-2 top-10 flex flex-col absolute ${
+						isDark == "dark" ? "bg-[#29292b]" : "bg-[#e7eced]"
+					}
+
+					shadow-2xs
+					rounded-lg
+					transition-all
+					duration-400
+					ease-in-out
+
+					${showMenu ? "opacity-100" : "opacity-0"}
+
+					*:px-2
+					*:py-2
+					*:w-fit
+					*:min-w-full
+					*:rounded-lg
+					*:bg-transparent
+					*:ease-in-out
+					*:hover:bg-gray-600
+					*:transition-all
+					*:duration-500
+					*:cursor-pointer
+					
+					*:text-foreground`}>
 					{/* <li>
 							<label
 							className="flex flex-col sm:flex-row items-center text-xs sm:text-[1rem]"
@@ -49,9 +80,9 @@ function NavbarPage() {
 					{/* <li>For You</li> */}
 					{/* <li>Following</li> */}
 
-					<li className="">
+					<li>
 						<span
-							className="flex flex-col sm:flex-row items-center text-xs sm:text-[1rem]"
+							className="flex w-40 items-center"
 							onClick={() => {
 								setIsDark((prev) => {
 									const newTheme = prev === "dark" ? "light" : "dark";
@@ -60,17 +91,26 @@ function NavbarPage() {
 								});
 							}}>
 							{" "}
-							<Switch checked={isDark == "dark"} className={"p-0 border"} />
-							<span className="mx-2 wrap-anywhere">Change Theme</span>
+							<span className="mt-0.5">
+								{" "}
+								{isDark != "dark" ? (
+									<Moon size={16} className="p-0 mx-1" />
+								) : (
+									<Sun size={16} className="p-0 mx-1" />
+								)}
+							</span>
+							<span className="text-sm text-center flex ">
+								{isDark != "dark" ? "Switch to dark mode" : "Switch to dark mode"}
+							</span>
 						</span>
 					</li>
 					<li
 						onClick={() => {
 							naviagtors("/profile");
 						}}>
-						<span className="flex flex-col sm:flex-row items-center text-xs sm:text-[1rem]">
+						<span className="flex items-center text-sm">
 							{" "}
-							<User height={"16px"} />
+							<User size={16} className="p-0 mx-1" />
 							<span className="">Profile</span>
 						</span>
 					</li>
