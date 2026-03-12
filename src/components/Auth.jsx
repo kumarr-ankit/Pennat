@@ -28,7 +28,7 @@ function Auth() {
 		loadUser();
 	}, [navi, userInfo, isLoading]);
 	return (
-		<div className="max-w-screen min-h-screen  box-border overflow-x-hidden">
+		<div className="max-w-screen min-h-screen  box-border ">
 			{isLoading && (
 				<div className="bg-gray-10 relative h-screen w-screen flex  justify-center items-center ">
 					<div className="top-1/3 text-shadow-gray-800   right-[50%] left-[50%] text-3xl font-bold font-[verdana] ">

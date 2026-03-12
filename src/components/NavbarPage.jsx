@@ -2,6 +2,7 @@ import { Moon, Pen, Pencil, Sun, User } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { themeContext } from "../context/Context";
+import { SearchButton } from "./SearchButton";
 
 function NavbarPage() {
 	const naviagtors = useNavigate();
@@ -16,21 +17,30 @@ function NavbarPage() {
 
 	return (
 		<nav
-			className="flex items-center  w-full justify-between px-4 fixed 
+			className="flex
+			
+			fixed
+			
+			items-center  w-full justify-between 
 			backdrop-blur-sm
 			border-b
+			 px-4
+			 py-2
+			
 		dark:bg-black
-		top-0  z-2  py-1">
-			<div>
+		top-0  z-2  ">
+			<NavLink to={'/home'}>
 				<h1 className="font-bold text-3xl mb-2 pl-2">Pennat</h1>
-			</div>
-			<div className="relative ">
-				<div
-					onClick={() => {
-						//e.stopPropagation();
-						setShowMenu((prev) => !prev);
-					}}>
+			</NavLink>
+			<div className="relative right-0">
+				<div className="flex flex-row items-center ">
+					<SearchButton />
+
 					<span
+						onClick={() => {
+							//e.stopPropagation();
+							setShowMenu((prev) => !prev);
+						}}
 						className={`flex flex-row hover:cursor-pointer items-center px-0.5 py-0.5 rounded-lg border mb-1 ${
 							showMenu ? "border-foreground" : "border-transparent"
 						}`}>
@@ -100,7 +110,9 @@ function NavbarPage() {
 								)}
 							</span>
 							<span className="text-sm text-center flex ">
-								{isDark != "dark" ? "Switch to dark mode" : "Switch to dark mode"}
+								{isDark != "dark"
+									? "Switch to dark mode"
+									: "Switch to dark mode"}
 							</span>
 						</span>
 					</li>

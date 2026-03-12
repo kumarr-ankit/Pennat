@@ -24,6 +24,7 @@ import PasswordFlow from "./components/PasswordFlow";
 import { CalculateTime } from "./utils/CalculateTime";
 import Offline from "./components/NoInternet";
 import InternetStatus from "./components/InternetStatus";
+import SearchPage from "./components/SearchPage";
 
 const router = createBrowserRouter([
 	{
@@ -130,6 +131,15 @@ const router = createBrowserRouter([
 		errorElement: <>Something Went Wrong.</>,
 	},
 	{
+		path: "/search",
+		element: (
+			<>
+				<SearchPage />
+			</>
+		),
+		errorElement: <>Something Went Wrong.</>,
+	},
+	{
 		path: "/*",
 		element: (
 			<>
@@ -175,12 +185,11 @@ function App() {
 		}
 	}, []);
 
-
 	//load user dat first time
 
 	useEffect(() => {
 		loadUser();
-	}, [loadUser,isOnline]);
+	}, [loadUser, isOnline]);
 
 	// theme handle
 
@@ -209,13 +218,10 @@ function App() {
 	let isPwa = localStorage.getItem("pwa");
 	if (isPwa == null) {
 		localStorage.setItem("pwa", true);
-
-
-
 	}
 
-	if(!isOnline){
-		return <Offline />
+	if (!isOnline) {
+		return <Offline />;
 	}
 	if (loading)
 		return (
@@ -228,7 +234,6 @@ function App() {
 			</div>
 		);
 
-	
 	return (
 		<div
 			id="app"
@@ -237,9 +242,10 @@ function App() {
 		*:dark:bg-[#121212]
 		*:dark:text-[#E0E0E0]
 		mx-0
+		
 		*:mx-0
 		*:my:0
-
+overflow-y-auto 
 		*:box-border
 		dark:bg-black
 		`}>

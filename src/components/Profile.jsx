@@ -193,7 +193,7 @@ function Profile() {
 			</div>
 
 			{/* Cover Image */}
-			<div className="w-full overflow-hidden bg-gray-100 max-h-60 dark:bg-[#1F1B24] h-52 flex justify-center">
+			<div className="w-full  bg-gray-100 max-h-60 dark:bg-[#1F1B24] h-52 flex justify-center">
 				<img src={cover} alt="cover" className="w-full h-full object-cover" />
 			</div>
 

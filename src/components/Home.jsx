@@ -65,7 +65,7 @@ function Home() {
 	}, [userInfo, isLoading, navi, setLikedArcticles, setArticlesData]);
 
 	return (
-		<div className="w-full overflow-x-clip  -mt-2 box-border h-fit  min-h-screen dark:bg-[#1F1B24]">
+		<div className="w-full    -mt-2 box-border h-fit  min-h-screen dark:bg-[#1F1B24]">
 			<NavbarPage />
 
 			<div
@@ -78,12 +78,12 @@ function Home() {
 					onClick={() => {
 						setWriter(true);
 					}}
-					className="border-2 hover:border-gray-800 shadow-2xl hover:scale-104 bg-black bottom-2 right-2 fixed justify-center sm:mx-auto mx-2 w-fit  text-sm rounded-xl  my-2 py-1 
+					className="border-2 hover:border-gray-900 shadow-2xl  bg-black bottom-2 right-2 fixed justify-center sm:mx-auto mx-6 w-fit  text-sm rounded-2xl dark:bg-[#313839]  my-2 py-1 
 					
 					mb-4  ">
 					<div
 						id="article_Button"
-						className="h-full w-full cursor-pointer px-4 flex justify-between items-center py-3 outline-0 [&:hover>.pencil]:-rotate-5"
+						className="h-full w-full cursor-pointer px-4 flex justify-between items-center py-3 outline-0 [&:hover>.pencil]:-rotate-5 select-none"
 						placeholder="">
 						<PenLine size={18} color="white" className="pencil" />
 						<span className="p-1 text-white">Write Article</span>

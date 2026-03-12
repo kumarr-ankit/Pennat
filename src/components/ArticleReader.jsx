@@ -428,7 +428,7 @@ function ArticleReader() {
 							}}
 							ref={commentRef}
 							placeholder="Write a comment..."
-							className="block field-sizing-content overflow-x-clip h-fit w-full px-2 py-0 focus:py-1 border-b border-gray-300 dark:border-gray-700 rounded-xs focus:outline-none"
+							className="block field-sizing-content  h-fit w-full px-2 py-0 focus:py-1 border-b border-gray-300 dark:border-gray-700 rounded-xs focus:outline-none"
 						/>
 						<div className="w-full mt-1 flex justify-end">
 							<button
