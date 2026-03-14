@@ -34,7 +34,7 @@ export function SearchButton({ SetSearchQuery }) {
 	}
 
 	return (
-		<div className=" flex   flex-col">
+		<div className=" flex  flex-col">
 			<Button
 				onClick={() => setOpen(true)}
 				variant="ghost"
@@ -44,24 +44,19 @@ export function SearchButton({ SetSearchQuery }) {
 			<CommandDialog
 				open={open}
 				onOpenChange={setOpen}
-				className="top-9    sm:left-1/2  ">
-				<Command>
+				className="top-10    sm:left-1/2  ">
+				<Command className="border  border-b-0">
 					<CommandInput
+					
 						onKeyDown={(e) => {
 							if (e.key == "Enter") {
 								goSearch(e.target.value);
 							}
 						}}
 						placeholder={placeholder}
+						
 					/>
-					{/* <CommandList>
-						<CommandEmpty>No results found.</CommandEmpty>
-						<CommandGroup heading="Suggestions are not available.">
-							<CommandItem>Calendar</CommandItem>
-							<CommandItem>Search Emoji</CommandItem>
-							<CommandItem>Calculator</CommandItem>
-						</CommandGroup>
-					</CommandList> */}
+				
 				</Command>
 			</CommandDialog>
 		</div>
