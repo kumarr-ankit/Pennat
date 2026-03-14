@@ -129,7 +129,7 @@ function Profile() {
 		navigate("/login");
 	}
 	return (
-		<div className="relative dark:text-gray-400 dark:bg-black bg-white pb-1 box-border w-full min-h-screen">
+		<div className="relative  dark:text-gray-400 bg-white dark:bg-black  pb-1 box-border w-full min-h-screen">
 			{/* Navigation & Edit Controls */}
 			<div className="absolute w-full z-10 p-4">
 				<div className="w-full flex justify-between items-center">
@@ -198,18 +198,18 @@ function Profile() {
 			</div>
 
 			{/* Cover Image */}
-			<div className="w-full  bg-gray-100 max-h-60 dark:bg-[#1F1B24] h-52 flex justify-center">
-				<img src={cover} alt="cover" className="w-full h-full object-cover" />
+			<div className="w-full p-0.5  sm:p-0 max-h-60 h-52 flex   ">
+				<img src={cover} alt="cover" className="min-w-full rounded-md sm:rounded-none   object-cover" />
 			</div>
 
 			{/* Profile Info Section */}
-			<div className="-mt-20 max-w-xl mx-auto px-4 relative ">
-				<div className="flex flex-col items-center">
-					<div className="relative group">
+			<div className="-mt-13 w-full  px-4   flex flex-col justify-start max-w-xl mx-auto  ">
+				<div className="flex w-full items-center justify-between mx-2">
+					<div className="relative group pl-8">
 						<img
 							src={profileImg}
 							alt="profile"
-							className="w-32 h-32 rounded-full ring-4 ring-white dark:ring-[#1F1B24] shadow-xl object-cover"
+							className="w-25 h-25 rounded-full   object-cover"
 						/>
 						{/* Edit Profile Image Button (Only for owner) */}
 						{isOwnProfile && (
@@ -221,45 +221,43 @@ function Profile() {
 						)}
 					</div>
 
-					<div className="flex items-center mt-4">
-						<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-							{profileData.name}
-						</h2>
-						<p className="text-sm ml-1 items-center mt-1 text-gray-500">
-							@{profileData.username}
-						</p>
-					</div>
-
-					<div className=" w-full flex gap-8 justify-center mt-2 ">
-						<div className="flex flex-col justify-center items-center">
-							<label className="text-sm" htmlFor="followers">
-								Followers
-							</label>
-							<p className="font-semibold">44M</p>
-						</div>
-						<div className="flex flex-col justify-center items-center">
-							<label className="text-sm" htmlFor="following">
-								Following
-							</label>
-							<p className="font-semibold">4K</p>
-						</div>
-					</div>
-
 					{!isOwnProfile && (
-						<div className="border p-2 rounded-md mx-2 bg-foreground text-background mt-2 hover:text-foreground hover:font-semibold hover:bg-gray-500 transition-all duration-400  shadow-2xs cursor-pointer">
+						<div className="border p-2 mt-16 rounded-md mx-2 bg-foreground text-background  hover:text-foreground hover:font-semibold hover:bg-gray-500 transition-all duration-400  shadow-2xs cursor-pointer">
 							Follow
 						</div>
 					)}
-					{about && (
-						<div className="mt-4 text-center">
-							<p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
-								About
-							</p>
-							<p className="text-gray-700 dark:text-gray-400 leading-relaxed max-w-sm">
-								{about}
-							</p>
-						</div>
-					)}
+				</div>
+
+				<div className="flex pl-4 items-center mt-2">
+					<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+						{profileData.name}
+					</h2>
+					<p className="text-sm ml-0.5 items-center mt-2 text-gray-500">
+						@{profileData.username}
+					</p>
+				</div>
+				{!about && (
+					<div className="mt-1 pl-4 text-sm">
+						<p className="text-gray-700 dark:text-gray-400 leading-relaxed max-w-sm">
+							{about
+								? about
+								: `Hey, I am am ${profileData?.name}. I write articles on Pennet.`}
+						</p>
+					</div>
+				)}
+				<div className=" pl-4 md:pl-16 md:mt-4 text-xs  flex gap-8  mt-2  ">
+					<div className="flex flex-col justify-center items-center">
+						<label className="text-sm" htmlFor="followers">
+							Followers
+						</label>
+						<p className="font-semibold">44M</p>
+					</div>
+					<div className="flex flex-col justify-center items-center">
+						<label className="text-sm" htmlFor="following">
+							Following
+						</label>
+						<p className="font-semibold">4K</p>
+					</div>
 				</div>
 			</div>
 
