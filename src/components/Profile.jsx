@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
 	ChevronLeft,
@@ -26,7 +26,6 @@ function Profile() {
 	const { username: urlUsername } = useParams();
 	const navigate = useNavigate();
 	const [currentUser] = useContext(userContext);
-
 	// 2. Local State
 	const [profileData, setProfileData] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -43,9 +42,15 @@ function Profile() {
 
 	// 3. Logic: Decide which data to load
 
+	//check for viewing other profile
+	let isMyProfile = useRef(true);
+
 	const [info] = useContext(userContext);
 	if (!info) navigate("/login");
 	useEffect(() => {
+		if (urlUsername) {
+			isMyProfile.current = false;
+		}
 		async function fetchProfile() {
 			setLoading(true);
 
@@ -216,11 +221,35 @@ function Profile() {
 						)}
 					</div>
 
-					<h2 className="mt-4 text-2xl font-bold text-gray-900 dark:text-gray-100">
-						{profileData.name}
-					</h2>
-					<p className="text-sm text-gray-500">@{profileData.username}</p>
+					<div className="flex items-center mt-4">
+						<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+							{profileData.name}
+						</h2>
+						<p className="text-sm ml-1 items-center mt-1 text-gray-500">
+							@{profileData.username}
+						</p>
+					</div>
 
+					<div className=" w-full flex gap-8 justify-center mt-2 ">
+						<div className="flex flex-col justify-center items-center">
+							<label className="text-sm" htmlFor="followers">
+								Followers
+							</label>
+							<p className="font-semibold">44M</p>
+						</div>
+						<div className="flex flex-col justify-center items-center">
+							<label className="text-sm" htmlFor="following">
+								Following
+							</label>
+							<p className="font-semibold">4K</p>
+						</div>
+					</div>
+
+					{!isOwnProfile && (
+						<div className="border p-2 rounded-md mx-2 bg-foreground text-background mt-2 hover:text-foreground hover:font-semibold hover:bg-gray-500 transition-all duration-400  shadow-2xs cursor-pointer">
+							Follow
+						</div>
+					)}
 					{about && (
 						<div className="mt-4 text-center">
 							<p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
