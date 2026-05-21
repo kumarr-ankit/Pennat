@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider,Outlet } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
@@ -13,8 +13,6 @@ import Profile from "./components/Profile";
 import ArticleWriter from "./components/ArticleWriter";
 import { Toaster } from "sonner";
 import Loader from "./components/Loader";
-
-
 
 import UserControl from "./components/UserControl";
 import { LoaderCircle } from "lucide-react";
@@ -31,34 +29,56 @@ import FollowingPage from "./components/FollowingPage";
 import { CarouselComp } from "./components/ui/Crousel";
 import { userDp } from "../public/avtar";
 import TopProgressBar from "./components/TopProgressBar";
+import Consent from "./components/utils/Consent";
 
 const router = createBrowserRouter([
-  {
-    element: (
-      <>
-        <TopProgressBar />
-        <Outlet />
-      </>
-    ),
-    children: [
-      { path: "/", element: <Auth /> },
-      { path: "/read", element: <CalculateTime /> },
-      { path: "/article", element: <ArticleReader /> },
-      { path: "/write", element: <ArticleWriter />, errorElement: <h2>Error Occurred.🙂</h2> },
-      { path: "/profile/:username", element: <Profile /> },
-      { path: "/profile/:username/followers", element: <FollowerPage /> },
-      { path: "/profile/:username/following", element: <FollowingPage /> },
-      { path: "/auth", element: <Auth /> },
-      { path: "/home", element: <Home /> },
-      { path: "/login", element: <Login /> },
-      { path: "/signup", element: <Signup /> },
-      { path: "/control", element: <UserControl /> },
-      { path: "/reset-password", element: <ResetPassword />, errorElement: <>Something Went Wrong.</> },
-      { path: "/flow", element: <PasswordFlow />, errorElement: <>Something Went Wrong.</> },
-      { path: "/search", element: <SearchPage />, errorElement: <>Something Went Wrong.In search Page</> },
-      { path: "/*", element: <NotAllowed />, errorElement: <>Something Went Wrong.</> },
-    ]
-  }
+	{
+		element: (
+			<>
+				<TopProgressBar />
+				<Outlet />
+			</>
+		),
+		children: [
+			{ path: "/", element: <Auth /> },
+			{ path: "/read", element: <CalculateTime /> },
+			{ path: "/article", element: <ArticleReader /> },
+			{
+				path: "/write",
+				element: <ArticleWriter />,
+				errorElement: <h2>Error Occurred.🙂</h2>,
+			},
+			{ path: "/profile/:username", element: <Profile /> },
+			{ path: "/profile/:username/followers", element: <FollowerPage /> },
+			{ path: "/profile/:username/following", element: <FollowingPage /> },
+			{ path: "/auth", element: <Auth /> },
+			{ path: "/oauth/consent", element: <Consent /> },
+			{ path: "/home", element: <Home /> },
+			{ path: "/login", element: <Login /> },
+			{ path: "/signup", element: <Signup /> },
+			{ path: "/control", element: <UserControl /> },
+			{
+				path: "/reset-password",
+				element: <ResetPassword />,
+				errorElement: <>Something Went Wrong.</>,
+			},
+			{
+				path: "/flow",
+				element: <PasswordFlow />,
+				errorElement: <>Something Went Wrong.</>,
+			},
+			{
+				path: "/search",
+				element: <SearchPage />,
+				errorElement: <>Something Went Wrong.In search Page</>,
+			},
+			{
+				path: "/*",
+				element: <NotAllowed />,
+				errorElement: <>Something Went Wrong.</>,
+			},
+		],
+	},
 ]);
 
 function App() {
@@ -70,7 +90,6 @@ function App() {
 	let isOnline = InternetStatus();
 
 	const loadUser = useCallback(async () => {
-
 		console.log("i am being called.");
 
 		let res = await supabase.auth.getUser();
@@ -96,7 +115,6 @@ function App() {
 		}
 
 		try {
-			
 			if (res?.data?.user) {
 				console.log("Google user metadata:", res.data.user?.user_metadata);
 				let { id } = res.data.user;
@@ -226,7 +244,6 @@ function App() {
 		
 		`}>
 			<Toaster position="top-center" />
-			
 
 			<dataContext.Provider
 				value={[

@@ -131,7 +131,7 @@ function Profile() {
 					setFailed(true);
 				} else {
 					setProfileData(res.data);
-                     document.title = res.data?.name ?? "Profile - Pennat"
+					document.title = res.data?.name ?? "Profile - Pennat";
 					usernameRef.current = res.data?.username;
 					nameRef.current = res.data?.name;
 					aboutRef.current = res.data?.about ?? "I am a pennat user.";
@@ -272,11 +272,9 @@ function Profile() {
 		setUsername(usernameRef.current.value);
 		setName(nameRef.current.value);
 		setAbout(aboutRef.current.value);
-        let changes = {};
-		
-		
+		let changes = {};
 
-		if (profileData?.username  != usernameRef.current.value) {
+		if (profileData?.username != usernameRef.current.value) {
 			changes["username"] = usernameRef.current.value;
 		}
 
@@ -301,7 +299,6 @@ function Profile() {
 				console.log(error);
 			} else {
 				toast("Success. Changes made will reflect soon.");
-				
 			}
 		}
 
@@ -341,7 +338,7 @@ function Profile() {
 											<>
 												<li>
 													<EditProfileDetails
-													title={"Edit profile"}
+														title={"Edit profile"}
 														trigger={
 															<>
 																<button
@@ -415,9 +412,7 @@ function Profile() {
 
 												<li>
 													<div className="p-1 pl-4 whitespace-nowrap flex  transition cursor-pointer  w-full ">
-														<AlertDialogBasic
-															titleText={`Sign out`}
-														/>
+														<AlertDialogBasic titleText={`Sign out`} />
 													</div>
 												</li>
 
