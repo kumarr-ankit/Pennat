@@ -33,7 +33,7 @@ function Login() {
 		}
 	}, []);
 
-	async function handleSubmit() {
+	async function handleSubmit(event) {
 		event.preventDefault();
 		let email = emailRef.current.value;
 		let password = passwordRef.current.value;
@@ -65,10 +65,9 @@ function Login() {
 				setErrorMsg(null);
 				setSuccess(true);
 				toast("Success! You logged in.");
-				await loadUser();
-				setTimeout(() => {
-					navi("/auth");
-				}, 1000);
+				// loadUser will be triggered automatically by onAuthStateChange
+				// Navigate to auth which will redirect to home
+				navi("/home", { replace: true });
 			}
 		} catch (error) {
 			console.log(error);

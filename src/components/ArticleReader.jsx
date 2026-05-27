@@ -80,7 +80,7 @@ function ArticleReader() {
 			const { error } = await supabase
 				.from("ArticleTable")
 				.update(changes)
-				.eq("id", articleId)
+				.eq("article_id", articleId)
 				.select();
 
 			if (error) {
@@ -108,7 +108,7 @@ function ArticleReader() {
 				const { data, error } = await supabase
 					.from("ArticleTable")
 					.select(`*,UserTable(*),CommentTable(*)`)
-					.eq("id", articleId)
+					.eq("article_id", articleId)
 					.single();
 
 				if (error) console.log(error);
@@ -391,7 +391,7 @@ function ArticleReader() {
 		const res = await supabase
 			.from("ArticleTable")
 			.delete()
-			.eq("id", article.id);
+			.eq("article_id", article.article_id);
 
 		if (!res.error) {
 			toast("Deleted successfully.");

@@ -24,7 +24,7 @@ import { ShareComponent } from "./ShareComponent";
 import { SignDialogue } from "./SignDialogue";
 
 function ArticleCard({ article }) {
-	const { name, username, profile_img } = article.UserTable;
+	const { name, username, profile_img } = article.UserTable || { name: "Unknown", username: "unknown", profile_img: null };
 	let [, , likedArcticles, setLikedArcticles] = useContext(dataContext);
 
 	let images = article.images ?? [];
@@ -50,11 +50,11 @@ function ArticleCard({ article }) {
 	});
 
 	async function handleDelete() {
-		if (article?.id) {
+		if (article?.article_id) {
 			const { error: likesError } = await supabase
 				.from("LikesTable")
 				.delete()
-				.eq("article_id", article.id);
+				.eq("article_id", article.article_id);
 
 			if (likesError) {
 				console.log(likesError);
@@ -64,7 +64,7 @@ function ArticleCard({ article }) {
 			const { error: CommentError } = await supabase
 				.from("CommentTable")
 				.delete()
-				.eq("article_id", article.id);
+				.eq("article_id", article.article_id);
 
 			if (CommentError) {
 				console.log(CommentError);
@@ -74,14 +74,14 @@ function ArticleCard({ article }) {
 			const { status, error } = await supabase
 				.from("ArticleTable")
 				.delete()
-				.eq("article_id", article.id);
+				.eq("article_id", article.article_id);
 
 			if (error) {
 				console.log(error);
 				toast("Can't delete Article.");
 			}
 			if (status === 204) {
-				setArticles((p) => p.filter((el) => el.id !== article.id));
+				setArticles((p) => p.filter((el) => el.article_id !== article.article_id));
 			}
 		}
 	}
@@ -233,7 +233,7 @@ function ArticleCard({ article }) {
 
 			<div
 				onClick={() => {
-					navigate(`/article?id=${article.id}`);
+					navigate(`/article?id=${article.article_id}`);
 				}}
 				className="hover:cursor-pointer ">
 				<div className="space-y-2 ">
@@ -293,7 +293,7 @@ function ArticleCard({ article }) {
 								body={article.body}
 								author={name}
 								username={username}
-								id={article.id}
+								id={article.article_id}
 							/>
 						</li>
 					</ul>

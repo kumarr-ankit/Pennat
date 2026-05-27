@@ -1,10 +1,10 @@
 import React from "react";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
-import InternetStatus from "./InternetStatus";
+import useOnlineStatus from "./InternetStatus";
 import path from "../assets/NoConnection.json";
 
 function Offline() {
-	let isOnline = InternetStatus();
+	let isOnline = useOnlineStatus();
 
 	return (
 		<div className="select-none h-screen w-screen flex flex-col items-center justify-center  ">
