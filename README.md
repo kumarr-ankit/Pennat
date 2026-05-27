@@ -207,11 +207,213 @@ graph TD
 
 Pennat uses Supabase for:
 
-* 🔐 Authentication
+* 🔐 Authentication (Email/Password + Google OAuth)
 * 💾 Database storage
 * 👤 User management
 
-The frontend expects the following tables and relationships to exist.
+---
+
+### 🛠️ Database Setup
+
+Go to your **Supabase Dashboard → SQL Editor** and run the following SQL to create all required tables:
+
+```sql
+-- Enable UUID generation
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- =========================
+-- UserTable
+-- =========================
+CREATE TABLE "UserTable" (
+  user_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text,
+  username text UNIQUE,
+  profile_img text,
+  cover_img text,
+  about text
+);
+
+-- =========================
+-- ArticleTable
+-- =========================
+CREATE TABLE "ArticleTable" (
+  article_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  author_id uuid REFERENCES "UserTable"(user_id) ON DELETE CASCADE,
+  title text,
+  body text,
+  likes integer DEFAULT 0,
+  comment_count integer DEFAULT 0,
+  created_at timestamptz DEFAULT now(),
+  view_count integer DEFAULT 0,
+  images text[]
+);
+
+-- =========================
+-- CommentTable
+-- =========================
+CREATE TABLE "CommentTable" (
+  comment_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  article_id uuid REFERENCES "ArticleTable"(article_id) ON DELETE CASCADE,
+  user_id uuid REFERENCES "UserTable"(user_id) ON DELETE CASCADE,
+  comment text,
+  created_at timestamptz DEFAULT now()
+);
+
+-- =========================
+-- LikesTable
+-- =========================
+CREATE TABLE "LikesTable" (
+  article_id uuid REFERENCES "ArticleTable"(article_id) ON DELETE CASCADE,
+  user_id uuid REFERENCES "UserTable"(user_id) ON DELETE CASCADE,
+  UNIQUE(article_id, user_id)
+);
+
+-- =========================
+-- FollowTable
+-- =========================
+CREATE TABLE "FollowTable" (
+  follower_id uuid REFERENCES "UserTable"(user_id) ON DELETE CASCADE,
+  following_id uuid REFERENCES "UserTable"(user_id) ON DELETE CASCADE,
+  UNIQUE(follower_id, following_id)
+);
+```
+
+---
+
+### 🔒 Row Level Security (RLS) Policies
+
+Supabase enables RLS by default. You **must** add these policies, otherwise all database operations will be blocked with a `403 Forbidden` error.
+
+Run this in the **SQL Editor** after creating the tables:
+
+```sql
+-- =========================
+-- Enable RLS on all tables
+-- =========================
+ALTER TABLE "UserTable" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "ArticleTable" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "CommentTable" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "LikesTable" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "FollowTable" ENABLE ROW LEVEL SECURITY;
+
+-- =========================
+-- UserTable Policies
+-- =========================
+CREATE POLICY "Anyone can view users"
+  ON "UserTable" FOR SELECT
+  USING (true);
+
+CREATE POLICY "Users can create own profile"
+  ON "UserTable" FOR INSERT
+  TO authenticated
+  WITH CHECK (user_id = auth.uid());
+
+CREATE POLICY "Users can update own profile"
+  ON "UserTable" FOR UPDATE
+  TO authenticated
+  USING (user_id = auth.uid());
+
+-- =========================
+-- ArticleTable Policies
+-- =========================
+CREATE POLICY "Anyone can view articles"
+  ON "ArticleTable" FOR SELECT
+  USING (true);
+
+CREATE POLICY "Users can create articles"
+  ON "ArticleTable" FOR INSERT
+  TO authenticated
+  WITH CHECK (author_id = auth.uid());
+
+CREATE POLICY "Users can update own articles"
+  ON "ArticleTable" FOR UPDATE
+  TO authenticated
+  USING (author_id = auth.uid());
+
+CREATE POLICY "Users can delete own articles"
+  ON "ArticleTable" FOR DELETE
+  TO authenticated
+  USING (author_id = auth.uid());
+
+-- =========================
+-- CommentTable Policies
+-- =========================
+CREATE POLICY "Anyone can view comments"
+  ON "CommentTable" FOR SELECT
+  USING (true);
+
+CREATE POLICY "Users can create comments"
+  ON "CommentTable" FOR INSERT
+  TO authenticated
+  WITH CHECK (user_id = auth.uid());
+
+CREATE POLICY "Users can delete own comments"
+  ON "CommentTable" FOR DELETE
+  TO authenticated
+  USING (user_id = auth.uid());
+
+-- =========================
+-- LikesTable Policies
+-- =========================
+CREATE POLICY "Anyone can view likes"
+  ON "LikesTable" FOR SELECT
+  USING (true);
+
+CREATE POLICY "Users can like"
+  ON "LikesTable" FOR INSERT
+  TO authenticated
+  WITH CHECK (user_id = auth.uid());
+
+CREATE POLICY "Users can unlike"
+  ON "LikesTable" FOR DELETE
+  TO authenticated
+  USING (user_id = auth.uid());
+
+-- =========================
+-- FollowTable Policies
+-- =========================
+CREATE POLICY "Anyone can view follows"
+  ON "FollowTable" FOR SELECT
+  USING (true);
+
+CREATE POLICY "Users can follow"
+  ON "FollowTable" FOR INSERT
+  TO authenticated
+  WITH CHECK (follower_id = auth.uid());
+
+CREATE POLICY "Users can unfollow"
+  ON "FollowTable" FOR DELETE
+  TO authenticated
+  USING (follower_id = auth.uid());
+```
+
+---
+
+### 🔑 Authentication Setup
+
+Pennat supports **Email/Password** and **Google OAuth** login.
+
+#### Email/Password
+Enabled by default in Supabase. No extra configuration needed.
+
+#### Google OAuth
+
+1. **Google Cloud Console:**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/) → **APIs & Services** → **Credentials**
+   - Create an **OAuth 2.0 Client ID** (Web application)
+   - Add `https://<your-supabase-project>.supabase.co/auth/v1/callback` to **Authorized redirect URIs**
+   - Copy the **Client ID** and **Client Secret**
+
+2. **Supabase Dashboard:**
+   - Go to **Authentication** → **Providers** → **Google**
+   - Enable the Google provider
+   - Paste the **Client ID** and **Client Secret** from Google Cloud Console
+
+3. **Redirect URLs:**
+   - Go to **Authentication** → **URL Configuration**
+   - Add your app URLs to **Redirect URLs**:
+     - `http://localhost:5173` (for local development)
+     - Your production URL (e.g., `https://pennat.vercel.app`)
 
 ---
 
@@ -221,13 +423,14 @@ The frontend expects the following tables and relationships to exist.
 
 Stores user profile information.
 
-| Column        | Description            |
-| ------------- | ---------------------- |
-| `user_id`     | Unique user identifier |
-| `name`        | Display name           |
-| `username`    | Public username        |
-| `profile_img` | Profile image URL      |
-| `about`       | User bio/about section |
+| Column        | Type   | Description            |
+| ------------- | ------ | ---------------------- |
+| `user_id`     | uuid   | Primary key            |
+| `name`        | text   | Display name           |
+| `username`    | text   | Public username (unique)|
+| `profile_img` | text   | Profile image URL      |
+| `cover_img`   | text   | Cover/banner image URL |
+| `about`       | text   | User bio/about section |
 
 ---
 
@@ -235,17 +438,17 @@ Stores user profile information.
 
 Stores articles/posts created by users.
 
-| Column          | Description               |
-| --------------- | ------------------------- |
-| `article_id`    | Unique article identifier |
-| `author_id`     | Reference to the author   |
-| `title`         | Article title             |
-| `body`          | Article content           |
-| `likes`         | Total likes count         |
-| `comment_count` | Total comments count      |
-| `created_at`    | Creation timestamp        |
-| `view_count`    | Number of views           |
-| `images`        | Attached image URLs       |
+| Column          | Type        | Description               |
+| --------------- | ----------- | ------------------------- |
+| `article_id`    | uuid        | Primary key               |
+| `author_id`     | uuid (FK)   | Reference to the author   |
+| `title`         | text        | Article title             |
+| `body`          | text        | Article content           |
+| `likes`         | integer     | Total likes count         |
+| `comment_count` | integer     | Total comments count      |
+| `created_at`    | timestamptz | Creation timestamp        |
+| `view_count`    | integer     | Number of views           |
+| `images`        | text[]      | Attached image URLs       |
 
 ---
 
@@ -253,13 +456,13 @@ Stores articles/posts created by users.
 
 Stores comments on articles.
 
-| Column       | Description               |
-| ------------ | ------------------------- |
-| `comment_id` | Unique comment identifier |
-| `article_id` | Related article           |
-| `user_id`    | Comment author            |
-| `comment`    | Comment text              |
-| `created_at` | Creation timestamp        |
+| Column       | Type        | Description               |
+| ------------ | ----------- | ------------------------- |
+| `comment_id` | uuid        | Primary key               |
+| `article_id` | uuid (FK)   | Related article           |
+| `user_id`    | uuid (FK)   | Comment author            |
+| `comment`    | text        | Comment text              |
+| `created_at` | timestamptz | Creation timestamp        |
 
 ---
 
@@ -267,10 +470,12 @@ Stores comments on articles.
 
 Tracks which users liked which articles.
 
-| Column       | Description                |
-| ------------ | -------------------------- |
-| `article_id` | Liked article              |
-| `user_id`    | User who liked the article |
+| Column       | Type      | Description                |
+| ------------ | --------- | -------------------------- |
+| `article_id` | uuid (FK) | Liked article              |
+| `user_id`    | uuid (FK) | User who liked the article |
+
+> Unique constraint on `(article_id, user_id)`
 
 ---
 
@@ -278,10 +483,12 @@ Tracks which users liked which articles.
 
 Stores user follow relationships.
 
-| Column         | Description         |
-| -------------- | ------------------- |
-| `follower_id`  | User who follows    |
-| `following_id` | User being followed |
+| Column         | Type      | Description         |
+| -------------- | --------- | ------------------- |
+| `follower_id`  | uuid (FK) | User who follows    |
+| `following_id` | uuid (FK) | User being followed |
+
+> Unique constraint on `(follower_id, following_id)`
 
 ---
 
@@ -304,6 +511,7 @@ erDiagram
         text name
         text username
         text profile_img
+        text cover_img
         text about
     }
 
@@ -336,63 +544,6 @@ erDiagram
         uuid following_id FK
     }
 ```
-
----
-
-### 🧱 Recommended Constraints
-
-For a reliable and scalable setup, configure the following database constraints.
-
-#### 🔑 Primary Keys
-
-Add primary keys to all identifier columns:
-
-* `UserTable.user_id`
-* `ArticleTable.article_id`
-* `CommentTable.comment_id`
-
----
-
-#### 🔗 Foreign Keys
-
-Configure relationships between tables:
-
-* `ArticleTable.author_id → UserTable.user_id`
-* `CommentTable.article_id → ArticleTable.article_id`
-* `CommentTable.user_id → UserTable.user_id`
-* `LikesTable.article_id → ArticleTable.article_id`
-* `LikesTable.user_id → UserTable.user_id`
-* `FollowTable.follower_id → UserTable.user_id`
-* `FollowTable.following_id → UserTable.user_id`
-
----
-
-#### 🧷 Unique Constraints
-
-Prevent duplicate relationships:
-
-| Table         | Constraint                                   |
-| ------------- | -------------------------------------------- |
-| `LikesTable`  | `(article_id, user_id)` must be unique       |
-| `FollowTable` | `(follower_id, following_id)` must be unique |
-| `UserTable`   | `username` should be unique                  |
-
-
-
----
-
-
-#### ✅ Recommended Extras
-
-Optional but highly recommended:
-
-* Add indexes on frequently queried columns
-* Enable Row Level Security (RLS)
-* Add `updated_at` timestamps
-* Use UUIDs for all IDs
-* Store image URLs instead of raw files
-  
- 
 
 ---
 

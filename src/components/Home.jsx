@@ -29,35 +29,62 @@ function Home() {
 		if (isLoading) return;
 
 		async function loadeArticles() {
-			const response = await supabase
-				.from("ArticleTable")
-				.select(
-					"created_at,likes,comment_count,article_id,id,title,author_id,body,UserTable(name,username,profile_img,user_id),images"
-				);
+			try {
+				const response = await Promise.race([
+					supabase
+						.from("ArticleTable")
+						.select(`
+							created_at,
+							likes,
+							comment_count,
+							article_id,
+							title,
+							author_id,
+							body,
+							images,
+							UserTable!author_id(
+							name,
+							username,
+							profile_img,
+							user_id
+							)
+							`)
+						.order("created_at", { ascending: false }),
+					new Promise((_, reject) => 
+						setTimeout(() => reject(new Error("Fetch timeout")), 8000)
+					)
+				]);
 
-			if (response.error) {
-				console.error("Database error:", response.error);
-
-				return null;
-			}
-			if (response.data) {
-				setArticlesData(response.data);
-				document.title = "Pennat"
-				console.log(response.data);
-
-				const { data, error } = await supabase.from("LikesTable").select();
-
-				if (error) {
-					console.log(error);
-				} else if (data) {
-					let tempSet = new Set();
-					data.forEach((row) => {
-						if (row.user_id == userInfo.user_id) tempSet.add(row.article_id);
-					});
-					console.log("Liked Articles By Me 🙍‍♂️🩷");
-					console.log(tempSet);
-					setLikedArcticles(tempSet);
+				if (response.error) {
+					console.error("Database error:", response.error);
+					setArticlesData([]); // Set empty array on error
+					return null;
 				}
+				if (response.data) {
+					setArticlesData(response.data);
+					document.title = "Pennat"
+					console.log(response.data);
+
+					// Only fetch liked articles if user is logged in
+					if (userInfo && userInfo.user_id) {
+						const { data, error } = await supabase.from("LikesTable").select();
+
+						if (error) {
+							console.log(error);
+						} else if (data) {
+							let tempSet = new Set();
+							data.forEach((row) => {
+								if (row.user_id == userInfo.user_id) tempSet.add(row.article_id);
+							});
+							console.log("Liked Articles By Me 🙍‍♂️🩷");
+							console.log(tempSet);
+							setLikedArcticles(tempSet);
+						}
+					}
+				}
+			} catch (error) {
+				console.error("Failed to load articles:", error.message);
+				setArticlesData([]); // Set empty array on error
 			}
 		}
 

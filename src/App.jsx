@@ -5,7 +5,7 @@ import Signup from "./components/Signup";
 import Home from "./components/Home";
 
 import Auth from "./components/Auth";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import supabase from "./config/supabaseClient";
 // eslint-disable-next-line no-unused-vars
 import { dataContext, userContext, themeContext } from "./context/Context";
@@ -22,12 +22,12 @@ import ResetPassword from "./components/ResetPassword";
 import PasswordFlow from "./components/PasswordFlow";
 import { CalculateTime } from "./utils/CalculateTime";
 import Offline from "./components/NoInternet";
-import InternetStatus from "./components/InternetStatus";
+import useOnlineStatus from "./components/InternetStatus";
 import SearchPage from "./components/SearchPage";
 import FollowerPage from "./components/FollowerPage";
 import FollowingPage from "./components/FollowingPage";
 import { CarouselComp } from "./components/ui/Crousel";
-import { userDp } from "../public/avtar";
+import userDp from "./assets/user.png";
 import TopProgressBar from "./components/TopProgressBar";
 import Consent from "./components/utils/Consent";
 
@@ -87,10 +87,31 @@ function App() {
 	const [loading, setLoading] = useState(true);
 	const [likedArcticles, setLikedArcticles] = useState(new Set());
 	const [myFollowing, setMyFollowing] = useState(new Set());
-	let isOnline = InternetStatus();
+	const isOnline = useOnlineStatus();
+	const isLoadingRef = useRef(false);
+	const initialLoadDone = useRef(false);
 
 	const loadUser = useCallback(async () => {
+		// Prevent duplicate calls (e.g., from onAuthStateChange firing while already loading)
+		if (isLoadingRef.current) {
+			console.log("loadUser already running, skipping duplicate call.");
+			return;
+		}
+		isLoadingRef.current = true;
 		console.log("i am being called.");
+
+		// Only show loading spinner on the very first load
+		if (!initialLoadDone.current) {
+			setLoading(true);
+		}
+
+		// Safety check for Supabase configuration
+		if (!supabase) {
+			console.error("Supabase client not initialized. Check environment variables.");
+			setLoading(false);
+			isLoadingRef.current = false;
+			return;
+		}
 
 		let res = await supabase.auth.getUser();
 
@@ -125,13 +146,12 @@ function App() {
 					.single();
 
 				if (error) {
-					// PGRST116 = no rows found — Google se pehli baar login
+					// PGRST116 = no rows found — first time Google login
 					if (error.code === "PGRST116") {
 						const googleUser = res.data.user;
 						console.log("Google user metadata:", res.data.user?.user_metadata);
 						const newUser = {
 							user_id: googleUser.id,
-							email: googleUser.email,
 							name:
 								googleUser.user_metadata?.full_name ||
 								googleUser.email.split("@")[0],
@@ -139,17 +159,19 @@ function App() {
 								googleUser.email.split("@")[0] +
 								"_" +
 								googleUser.id.slice(0, 4),
-							profile_img: googleUser.user_metadata?.avatar_url || userDp,
+							profile_img: googleUser.user_metadata?.avatar_url || "",
 						};
+
+						console.log("Inserting new Google user:", newUser);
 
 						const { data: insertedUser, error: insertError } = await supabase
 							.from("UserTable")
 							.insert(newUser)
-							.select("*,ArticleTable(*)")
+							.select("*")
 							.single();
 
 						if (insertError) {
-							console.log("Could not create new Google user:", insertError);
+							console.error("Could not create new Google user:", JSON.stringify(insertError, null, 2));
 							setUserInfo(null);
 						} else {
 							console.log("New Google user created successfully.");
@@ -157,28 +179,54 @@ function App() {
 							loadFollowinglist(googleUser.id);
 						}
 					} else {
-						console.log(error);
+						console.error("Error fetching user:", JSON.stringify(error, null, 2));
 						setUserInfo(null);
 					}
 				} else {
 					setUserInfo(data);
 					loadFollowinglist(id);
 				}
+			} else {
+				// No user logged in - this is normal for first-time visitors
+				console.log("No user logged in. User will see login page.");
+				setUserInfo(null);
 			}
 		} catch (error) {
-			alert("Error while Loading." + error);
-			console.log(error);
+			console.error("Error while Loading:", error);
 			setUserInfo(null);
 		} finally {
 			setLoading(false);
+			isLoadingRef.current = false;
+			initialLoadDone.current = true;
 		}
 	}, []);
 
-	//load user dat first time
-
+	//load user data first time
 	useEffect(() => {
 		loadUser();
 	}, [loadUser, isOnline]);
+
+	// Listen for auth state changes (critical for OAuth redirects like Google login)
+	useEffect(() => {
+		const { data: { subscription } } = supabase.auth.onAuthStateChange(
+			(event, session) => {
+				console.log("Auth state changed:", event);
+				// Only reload on actual sign-in (not TOKEN_REFRESHED which fires on tab focus)
+				if (event === "SIGNED_IN") {
+					loadUser();
+				}
+				if (event === "SIGNED_OUT") {
+					setUserInfo(null);
+					setLoading(false);
+					initialLoadDone.current = false;
+				}
+			}
+		);
+
+		return () => {
+			subscription.unsubscribe();
+		};
+	}, [loadUser]);
 
 	// theme handle
 

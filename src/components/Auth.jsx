@@ -1,12 +1,13 @@
 import React, { useContext, useEffect } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { userContext } from "../context/Context";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 
 function Auth() {
 	const navi = useNavigate();
+	const [searchParams] = useSearchParams();
 
 	const [userInfo, isLoading] = useContext(userContext);
 	if (navigator.onLine) {
@@ -15,15 +16,29 @@ function Auth() {
 		console.log("Device is likely offline from a network perspective.");
 	}
 
+	// Check for OAuth error in URL params
+	const oauthError = searchParams.get("error");
+	const oauthErrorDesc = searchParams.get("error_description");
+
 	useEffect(() => {
-		async function loadUser() {
-			if (isLoading) return;
-               
-		
-			navi("/home", { replace: true });
+		if (oauthError) {
+			console.error("OAuth error:", oauthError, oauthErrorDesc);
+			toast.error(oauthErrorDesc || "Login failed. Please try again.");
 		}
-		loadUser();
-	}, [navi, userInfo, isLoading]);
+	}, [oauthError, oauthErrorDesc]);
+
+	useEffect(() => {
+		if (isLoading) return;
+		
+		if (userInfo) {
+			// User is logged in, go to home
+			navi("/home", { replace: true });
+		} else {
+			// User is not logged in, go to login page
+			navi("/login", { replace: true });
+		}
+	}, [isLoading, userInfo, navi]);
+
 	return (
 		<div className="max-w-screen min-h-screen  box-border ">
 			{isLoading && (
@@ -47,7 +62,9 @@ function Auth() {
 
 			{!isLoading && !userInfo && (
 				<div className="bg-orange-200 w-fit m-auto p-4 rounded-xl border border-red-400 text-red-700">
-					something went wrong.
+					{oauthError
+						? `Login failed: ${oauthErrorDesc || oauthError}`
+						: "Redirecting to login..."}
 				</div>
 			)}
 		</div>

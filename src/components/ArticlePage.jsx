@@ -7,22 +7,34 @@ import { LoaderCircle } from "lucide-react";
 function ArticlePage({ articles }) {
 	let [articlesData] = useContext(dataContext);
 
-	if (articles) articlesData = articles;
+	if (articles !== undefined) articlesData = articles;
 	console.log(articles);
+
+	// Check if articles have finished loading (array exists) vs still loading (undefined)
+	const isLoading = articlesData === undefined;
+	const isEmpty = Array.isArray(articlesData) && articlesData.length === 0;
 
 	return (
 		<div className="mt-3 px-auto  h-full min-h-screen w-full">
-			{articlesData?.length ? (
+			{!isLoading && !isEmpty && articlesData?.length ? (
 				<div
 					className="flex  justify-center     flex-col items-center w-full box-border pb-8 
 				">
 					{articlesData &&
-						articlesData.map((el) => <ArticleCard key={el.id} article={el} />)}
+						articlesData.map((el) => <ArticleCard key={el.article_id} article={el} />)}
 				</div>
 			) : (
 				""
 			)}
-			{!articlesData?.length && (
+			{isEmpty && (
+				<div className="min-h-screen flex items-center justify-center">
+					<div className="text-center text-gray-600">
+						<p className="text-lg">No articles yet</p>
+						<p className="text-sm">Be the first to write one!</p>
+					</div>
+				</div>
+			)}
+			{isLoading && (
 				<div className="min-h-screen flex items-center  justify-center">
 					<div className="flex items-center gap-2 text-gray-600">
 						<LoaderCircle size={24} className="animate-spin" />

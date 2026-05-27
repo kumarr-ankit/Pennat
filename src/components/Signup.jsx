@@ -77,10 +77,9 @@ function Signup() {
 			.from("UserTable")
 			.insert([
 				{
+					user_id: userData.id,
 					username: usernameRef.current.value,
 					name: nameRef.current.value,
-					email: userData.email,
-					gender: "1",
 				},
 			])
 			.select();

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-function InternetStatus() {
+function useOnlineStatus() {
 	const [online, setOnline] = useState(navigator.onLine);
 	useEffect(() => {
 		function setON() {
@@ -21,4 +21,4 @@ function InternetStatus() {
 	return online;
 }
 
-export default InternetStatus;
+export default useOnlineStatus;
